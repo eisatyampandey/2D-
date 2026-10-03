@@ -191,11 +191,11 @@ textarea,
   50% { opacity: 0.95; transform: scale(1.25) rotate(180deg); }
 }
 
-/* --- Floating Music Toggle --- */
+/* --- Floating Music Toggle (Anchored to Portrait Frame) --- */
 .music-toggle-btn {
   position: fixed;
   top: calc(14px + var(--safe-top));
-  right: 16px;
+  right: max(16px, calc(50% - 215px + 16px));
   z-index: 100;
   display: flex;
   align-items: center;
@@ -256,16 +256,32 @@ textarea,
   100% { height: 12px; }
 }
 
-/* --- Mobile App Shell --- */
+/* --- Mobile App Shell (Strict Portrait Mode Framing) --- */
 .mobile-app-shell {
   width: 100%;
-  max-width: 440px;
+  max-width: 430px;
   margin: 0 auto;
   min-height: 100vh;
   position: relative;
   z-index: 10;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
+}
+
+@media (min-width: 481px) {
+  body {
+    background: #F9F6F7;
+    display: flex;
+    justify-content: center;
+  }
+
+  .mobile-app-shell {
+    box-shadow: 0 0 50px rgba(236, 72, 153, 0.12), 0 0 1px rgba(0, 0, 0, 0.12);
+    background: linear-gradient(180deg, #FFF5F7 0%, #FFFFFF 45%, #FEFCE8 100%);
+    border-left: 1px solid rgba(255, 182, 193, 0.35);
+    border-right: 1px solid rgba(255, 182, 193, 0.35);
+  }
 }
 
 /* --- Screen Views Container --- */
@@ -1263,26 +1279,29 @@ textarea,
 }
 
 .stage-tabs-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
   margin-bottom: 14px;
+  width: 100%;
 }
 
 .stage-tab {
-  flex: 1;
-  padding: 8px 4px;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 6px;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1.5px solid var(--color-border);
   border-radius: 12px;
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--text-muted);
   cursor: pointer;
   white-space: nowrap;
   text-align: center;
   transition: all 0.2s;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
 }
 
 .stage-tab.active {
@@ -1307,15 +1326,19 @@ textarea,
 .evolution-photo-frame {
   position: relative;
   width: 100%;
-  aspect-ratio: 1 / 1;
-  background: #FFFDFE;
+  aspect-ratio: 4 / 5;
+  background: linear-gradient(180deg, #FFF0F3 0%, #FFFFFF 100%);
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .evolution-photo {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
   display: block;
   transition: opacity 0.3s ease;
 }
@@ -2019,7 +2042,7 @@ textarea,
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
-  max-width: 440px;
+  max-width: 430px;
   background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(20px);
   border-top: 1px solid var(--color-border);
@@ -2148,6 +2171,6 @@ textarea,
   .bubble-message { font-size: 12px; }
   .question-text { font-size: 17px; }
   .option-text-content { font-size: 12.5px; }
-  .evolution-photo-frame { aspect-ratio: 1 / 1; height: auto; }
+  .evolution-photo-frame { aspect-ratio: 4 / 5; height: auto; }
   .vault-doraemon-avatar { width: 60px; height: 60px; }
 }
