@@ -142,6 +142,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     startBGM() {
+      if (this.isPlayingBgm) return;
+      this.init();
+      if (this.ctx && this.ctx.state === 'suspended') {
+        this.ctx.resume();
+      }
       this.isPlayingBgm = true;
       // "Happy Birthday to You" tune notes:
       // G4, G4, A4, G4, C5, B4
@@ -347,6 +352,28 @@ document.addEventListener('DOMContentLoaded', () => {
       audio.playFanfare();
       haptic([50, 100, 50, 150]);
     }
+
+    // Always automatic sound ON when user is on the last page (The Secret Vault)
+    if (screenId === 'screen-vault') {
+      audio.init();
+      audio.startBGM();
+      if (musicToggleBtn) {
+        musicToggleBtn.classList.add('playing');
+      }
+    }
+  }
+
+  // Backup fallback: First interaction anywhere on Vault guarantees sound starts
+  if (screens.vault) {
+    screens.vault.addEventListener('pointerdown', () => {
+      if (!audio.isPlayingBgm) {
+        audio.init();
+        audio.startBGM();
+        if (musicToggleBtn) {
+          musicToggleBtn.classList.add('playing');
+        }
+      }
+    }, { passive: true });
   }
 
   navTabs.forEach(tab => {
@@ -1103,29 +1130,35 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Touch Swipe on Evolution Card (Android Native Gestures)
+  // Touch Swipe on Evolution Card (Ensuring Vertical 1-Finger Scrolls are Never Interrupted)
   const evolutionCard = document.getElementById('evolutionCard');
   let touchStartX = 0;
   let touchEndX = 0;
+  let touchStartY = 0;
+  let touchEndY = 0;
 
   evolutionCard.addEventListener('touchstart', (e) => {
     touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
   }, { passive: true });
 
   evolutionCard.addEventListener('touchend', (e) => {
     touchEndX = e.changedTouches[0].screenX;
+    touchEndY = e.changedTouches[0].screenY;
     handleSwipe();
   }, { passive: true });
 
   function handleSwipe() {
-    const diff = touchEndX - touchStartX;
-    if (Math.abs(diff) > 45) {
+    const diffX = touchEndX - touchStartX;
+    const diffY = touchEndY - touchStartY;
+    // Only trigger horizontal stage change if horizontal drag is deliberate and dominant over vertical scrolling
+    if (Math.abs(diffX) > 60 && Math.abs(diffX) > Math.abs(diffY) * 1.5) {
       audio.init();
-      if (diff < 0 && currentStageIdx < evolutionStages.length - 1) {
+      if (diffX < 0 && currentStageIdx < evolutionStages.length - 1) {
         // Swiped Left -> Next Stage
         audio.playCorrectChime();
         renderStage(currentStageIdx + 1);
-      } else if (diff > 0 && currentStageIdx > 0) {
+      } else if (diffX > 0 && currentStageIdx > 0) {
         // Swiped Right -> Prev Stage
         audio.playCorrectChime();
         renderStage(currentStageIdx - 1);

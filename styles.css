@@ -59,17 +59,73 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-html, body {
+html {
+  width: 100%;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+body {
   width: 100%;
   min-height: 100vh;
+  min-height: 100dvh;
   background: linear-gradient(180deg, #FFF5F7 0%, #FFFFFF 45%, #FEFCE8 100%);
   color: var(--text-dark);
   font-family: var(--font-sans);
   overflow-x: hidden;
+  overflow-y: auto;
   position: relative;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: auto;
+  scroll-behavior: smooth;
+}
+
+/* --- Container Touch-Action for 1-Finger Smooth Panning --- */
+.mobile-app-shell,
+.screen-view,
+.evolution-card,
+.biometric-card,
+.trivia-card,
+.cake-display-card {
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Fast tap response for buttons & interactive elements */
+button,
+a,
+input,
+select,
+textarea,
+.nav-tab-item,
+.option-card,
+.stage-tab,
+.fingerprint-btn {
   touch-action: manipulation;
-  overscroll-behavior-y: none;
+}
+
+/* --- Custom Smooth Birthday Scrollbar --- */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 245, 247, 0.6);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 182, 193, 0.65);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--c-baby-pink-vibrant);
 }
 
 /* --- Ambient Floating Birthday Lights (Baby Pink & Sunshine Yellow) --- */
@@ -1815,6 +1871,8 @@ html, body {
   position: relative;
   max-height: 88vh;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
 }
 
 .modal-close-btn {
