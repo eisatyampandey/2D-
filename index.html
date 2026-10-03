@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#FFF5F7">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>Palak's Birthday Mission 🎂 | Detective Bureau Vault</title>
+
+  <!-- Google Fonts: Birthday Letter Script + Modern Clean Sans + Editorial Serif + Monospace -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Marck+Script&family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+
+<body>
+  <!-- Ambient Birthday Floating Glow Orbs (Baby Pink & Sunshine Yellow) -->
+  <div class="ambient-glow orb-pink"></div>
+  <div class="ambient-glow orb-yellow"></div>
+  <div class="ambient-glow orb-light"></div>
+  <div class="sparkles-container" id="sparkles-bg"></div>
+
+  <!-- Music Toggle Floating Pill -->
+  <div class="music-toggle-btn" id="musicToggleBtn" title="Toggle Birthday Tunes">
+    <span class="music-icon">🎵</span>
+    <span class="music-text">BGM</span>
+    <span class="music-waves">
+      <span></span><span></span><span></span>
+    </span>
+  </div>
+
+  <!-- Main Mobile App Shell -->
+  <div class="mobile-app-shell">
+
+    <!-- ========================================================================= -->
+    <!-- ACT 0: WELCOME & BIOMETRIC AUTHENTICATION SCREEN                          -->
+    <!-- ========================================================================= -->
+    <section class="screen-view active" id="screen-welcome">
+      <!-- Top Meta Header -->
+      <div class="top-nav-bar">
+        <div class="status-pill">
+          <span class="pulsing-dot pink"></span>
+          <span>PALAK'S DAY</span>
+          <span class="badge-year">2026</span>
+        </div>
+        <div class="vip-pill">
+          <span>VIP Access 🛡️</span>
+        </div>
+      </div>
+
+      <!-- Welcome Hero Header -->
+      <div class="screen-header">
+        <div class="mission-tag">✦ TOP-SECRET BIRTHDAY MISSION ✦</div>
+        <h1 class="main-title">
+          Identify Yourself, <span class="handwritten-accent">Palak!</span>
+        </h1>
+        <p class="main-subtitle">
+          Place your finger on the sensor to authenticate and unlock your secret celebration vault.
+        </p>
+      </div>
+
+      <!-- Inspector CID Dialogue Pill -->
+      <div class="inspector-quote-pill">
+        <div class="quote-avatar-dot">
+          <img src="assets/doraemon.png" alt="Doraemon Inspector">
+        </div>
+        <div class="quote-text">
+          <span class="quote-author">Daya Sir:</span> "Suspect <span class="highlight-pink">Palak</span> ko roko...
+          Birthday party shuru karne ka order aa gaya hai!"
+        </div>
+      </div>
+
+      <!-- Biometric Scanner Interaction Card -->
+      <div class="biometric-card">
+        <div class="scanner-rings">
+          <div class="pulse-ring ring-1"></div>
+          <div class="pulse-ring ring-2"></div>
+          <div class="pulse-ring ring-3"></div>
+
+          <button class="fingerprint-btn doraemon-security-scanner-btn" id="fingerprintBtn"
+            aria-label="Authenticate Security Clearance">
+            <div class="laser-scanner"></div>
+            <img src="assets/doraemon_security.png" alt="Officer Doraemon Security Check" class="security-doraemon-img">
+            <div class="security-scan-badge">🛡️</div>
+          </button>
+        </div>
+
+        <div class="touch-pill">DORAEMON SECURITY CHECK 🛡️</div>
+        <div class="scan-hint" id="scanHint">Tap or hold to calibrate birthday pulse ✨</div>
+        <div class="scan-progress-bar">
+          <div class="scan-progress-fill" id="scanProgressFill"></div>
+        </div>
+      </div>
+
+      <!-- Primary Action CTA -->
+      <button class="primary-pill-btn" id="startMissionBtn">
+        <span>Start Birthday Mission</span>
+        <span class="btn-arrow">➔</span>
+      </button>
+
+      <!-- Bottom Trust Badges -->
+      <div class="trust-badges-row">
+        <span class="badge-mini">🎂 Celebrating Palak</span>
+        <span class="badge-mini">💖 Joy &amp; Love 100%</span>
+      </div>
+    </section>
+
+
+    <!-- ========================================================================= -->
+    <!-- ACT 1: INTERROGATION ARCADE (BIG DORAEMON OVERLOOKING QUESTIONS)          -->
+    <!-- ========================================================================= -->
+    <section class="screen-view" id="screen-quiz">
+      <!-- Top Progress / Case Header -->
+      <div class="top-nav-bar">
+        <div class="status-pill alert-pill">
+          <span class="pulsing-dot red"></span>
+          <span>DEFCON 1 // CASE #1024</span>
+        </div>
+        <div class="question-pill">
+          <span id="quizQuestionCounter">Question 1 of 4</span> 🎯
+        </div>
+      </div>
+
+      <!-- Progress Meter -->
+      <div class="quiz-progress-track">
+        <div class="quiz-progress-fill" id="quizProgressBar"></div>
+      </div>
+      <div class="progress-labels">
+        <span class="subtext-xs">B-DAY BUREAU VERIFICATION</span>
+        <span class="subtext-xs bold" id="quizProgressPercent">25% Solved</span>
+      </div>
+
+      <!-- BIG DORAEMON INSPECTOR STAGE (LOOKING DOWN AT QUESTION) -->
+      <div class="big-doraemon-stage" id="doraemonStage">
+        <div class="doraemon-big-frame">
+          <img src="assets/doraemon.png" alt="Big Inspector Doraemon" id="bigDoraemonImg"
+            class="big-doraemon-character">
+          <div class="doraemon-emotion-badge" id="doraemonEmotionBadge">🔍</div>
+        </div>
+
+        <!-- Live Character Speech Bubble -->
+        <div class="doraemon-live-bubble" id="doraemonSpeechBubble">
+          <div class="bubble-sender">INSPECTOR DORAEMON // CID BUREAU</div>
+          <div class="bubble-message" id="inspectorDialogue">
+            "Palak, sach sach batao! What is the true study secret?"
+          </div>
+        </div>
+      </div>
+
+      <!-- The Quiz Card -->
+      <div class="quiz-card" id="quizCard">
+        <div class="exhibit-header">
+          <span class="exhibit-tag" id="exhibitTag">EXHIBIT A</span>
+          <span class="verdict-tag" id="verdictTag">⚡ CRITICAL EVIDENCE</span>
+        </div>
+
+        <h2 class="question-text" id="questionTitle">
+          What is Palak's exact mental state during exam prep?
+        </h2>
+
+        <!-- 4 MCQ Options Container -->
+        <div class="options-container" id="optionsContainer">
+          <!-- Dynamically populated 4 Options (A, B, C, D) -->
+        </div>
+
+        <!-- Dynamic Feedback Container -->
+        <div class="feedback-box hidden" id="quizFeedbackBox">
+          <div class="feedback-icon" id="feedbackIcon">💡</div>
+          <div class="feedback-text" id="feedbackText">Feedback message</div>
+        </div>
+      </div>
+
+      <!-- Quiz Card Action Buttons -->
+      <div class="quiz-action-bar">
+        <button class="primary-pill-btn" id="nextQuestionBtn">
+          <span id="nextQuestionBtnText">Next Clue: Question 2 ➔</span>
+          <span class="btn-arrow">➔</span>
+        </button>
+      </div>
+    </section>
+
+
+    <!-- ========================================================================= -->
+    <!-- ACT 1.5: SYSTEM BYPASSED / VERIFICATION SUCCESS SUSPENSE                  -->
+    <!-- ========================================================================= -->
+    <section class="screen-view" id="screen-verified">
+      <div class="top-nav-bar">
+        <div class="status-pill success-pill">
+          <span class="pulsing-dot green"></span>
+          <span>CASE #24 • B-DAY BUREAU</span>
+        </div>
+        <div class="vip-pill">
+          <span>ACTIVE 👤</span>
+        </div>
+      </div>
+
+      <div class="verified-header">
+        <div class="verified-tag">🎉 IDENTITY CONFIRMED</div>
+        <div class="unlock-graphic">
+          <div class="unlock-circle">
+            <span class="unlock-icon">🔓</span>
+          </div>
+          <div class="unlock-sparkles">✨</div>
+        </div>
+        <h1 class="main-title">
+          You Are <span class="handwritten-accent">100% Palak!</span>
+        </h1>
+        <p class="main-subtitle">
+          Bypassing security protocols... Unlocking Palak's Evolution stages &amp; birthday vault!
+        </p>
+      </div>
+
+      <!-- CID Solved Card -->
+      <div class="cid-solved-card">
+        <div class="cid-doraemon-avatar">
+          <img src="assets/doraemon_happy.png" alt="Doraemon Verified Happy">
+        </div>
+        <div class="cid-solved-content">
+          <div class="cid-title">CID CASE SOLVED 🎖️</div>
+          <p class="cid-text">
+            "100% verified Palak! Unlocking Hall of Fame &amp; top-secret celebration archives!"
+          </p>
+        </div>
+      </div>
+
+      <!-- Biometric Matches Checklist -->
+      <div class="protocol-checklist">
+        <div class="protocol-header">BIOMETRIC PROTOCOL MATCHES</div>
+
+        <div class="protocol-item">
+          <div class="proto-check">✓</div>
+          <div class="proto-label">Exam Prep: Certified Himalayan Monk</div>
+          <div class="proto-emoji">🏔️</div>
+        </div>
+
+        <div class="protocol-item">
+          <div class="proto-check">✓</div>
+          <div class="proto-label">Govt Decree: Molten Silk Rivers</div>
+          <div class="proto-emoji">🍫</div>
+        </div>
+
+        <div class="protocol-item">
+          <div class="proto-check">✓</div>
+          <div class="proto-label">Class 2 Incident: 10-Year Joke Lore</div>
+          <div class="proto-emoji">✏️</div>
+        </div>
+
+        <div class="protocol-item highlight-queen">
+          <div class="proto-check">👑</div>
+          <div class="proto-label">Birthday Status: Undisputed Queen</div>
+          <div class="proto-emoji">✨</div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <button class="primary-pill-btn" id="enterEvolutionBtn">
+        <span>Enter Palak's Evolution</span>
+        <span class="btn-arrow">🚀</span>
+      </button>
+    </section>
+
+
+    <!-- ========================================================================= -->
+    <!-- ACT 2: PALAK'S EVOLUTION (HALL OF FAME 4 STAGES)                         -->
+    <!-- ========================================================================= -->
+    <section class="screen-view" id="screen-evolution">
+      <!-- Header -->
+      <div class="top-nav-bar">
+        <div class="status-pill">
+          <span class="pulsing-dot gold"></span>
+          <span>PALAK'S HALL OF FAME 🌟</span>
+        </div>
+        <div class="stage-counter-pill" id="stageCounterPill">
+          STAGE 1 OF 4
+        </div>
+      </div>
+
+      <div class="evolution-page-title">
+        <h2 class="main-title">
+          The Evolution of <span class="handwritten-accent">Palak</span>
+        </h2>
+        <div class="evolution-sub-badge" id="evolutionSubBadge">LUMIÈRE FESTIVE</div>
+      </div>
+
+      <!-- Story Stage Selector Tabs -->
+      <div class="stage-tabs-row">
+        <button class="stage-tab active" data-stage="0">
+          <span>👧 1. Eraser</span>
+        </button>
+        <button class="stage-tab" data-stage="1">
+          <span>🧘‍♀️ 2. Saint Yoga</span>
+        </button>
+        <button class="stage-tab" data-stage="2">
+          <span>🏛️ 3. Officer</span>
+        </button>
+        <button class="stage-tab" data-stage="3">
+          <span>👑 4. Queen (23)</span>
+        </button>
+      </div>
+
+      <!-- Evolution Card Container -->
+      <div class="evolution-card-container">
+        <div class="evolution-card" id="evolutionCard">
+
+          <!-- Image Frame with Overlay Badges -->
+          <div class="evolution-photo-frame">
+            <img src="assets/stage1.jpg" alt="Stage Illustration" id="evolutionImg" class="evolution-photo">
+
+            <div class="photo-overlay-top">
+              <span class="photo-badge gold" id="photoBadgeTag">ORIGIN STORY</span>
+              <span class="photo-badge dark" id="photoCaseId">CASE FILE #001</span>
+            </div>
+
+            <!-- Stage 4 Celebrating Doraemon & CID Inspector Squad Overlay -->
+            <div class="stage4-squad-overlay hidden" id="stage4SquadOverlay">
+              <div class="squad-badges-row">
+                <div class="squad-pill dora-pill">
+                  <img src="assets/doraemon_happy.png" alt="Doraemon">
+                  <span>Doraemon 🥳</span>
+                </div>
+                <div class="squad-pill cid-pill">
+                  <span class="pill-icon">🕵️‍♂️</span>
+                  <span>Daya Sir</span>
+                </div>
+                <div class="squad-pill acp-pill">
+                  <span class="pill-icon">👨‍✈️</span>
+                  <span>ACP Pradyuman</span>
+                </div>
+              </div>
+              <div class="stage4-goggles-tag">
+                <span>🕶️ Palak (23) with Goggles &amp; Cake! 🎂✨</span>
+              </div>
+            </div>
+
+            <!-- Peeking Inspector Doraemon Banner -->
+            <div class="peeking-avatar-banner">
+              <img src="assets/doraemon.png" alt="Doraemon Peeking" class="peeking-doraemon-img">
+              <div class="peeking-quote" id="peekingQuote">
+                <span class="peeking-name">Inspector Doraemon:</span> "The eraser incident that started 10+ years of
+                legendary banter!"
+              </div>
+            </div>
+          </div>
+
+          <!-- Stage Info & Lore -->
+          <div class="evolution-content">
+            <div class="evolution-meta-row">
+              <h3 class="stage-title" id="stageTitle">1. Class 2 Eraser Thief</h3>
+              <span class="stage-era" id="stageEra">Circa Primary School</span>
+            </div>
+
+            <p class="stage-description" id="stageDescription">
+              Dropping erasers &amp; accidently creating 10+ years of running jokes ✏️
+            </p>
+
+            <!-- 3 Stat Metrics Counters -->
+            <div class="stats-counters-grid">
+              <div class="stat-box">
+                <div class="stat-label" id="statLabel1">MISCHIEF</div>
+                <div class="stat-value" id="statValue1">100%</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-label" id="statLabel2">BANTER</div>
+                <div class="stat-value" id="statValue2">10+ Years</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-label" id="statLabel3">INNOCENCE</div>
+                <div class="stat-value" id="statValue3">0%</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Navigation / Evolve Action Button -->
+      <div class="evolution-action-row">
+        <button class="primary-pill-btn" id="evolveActionBtn">
+          <span id="evolveActionText">Evolve Palak! 🚀</span>
+          <span class="btn-subtext" id="evolveNextLabel">Next: Stage 2 ➔</span>
+        </button>
+      </div>
+    </section>
+
+
+    <!-- ========================================================================= -->
+    <!-- ACT 3: BIRTHDAY VAULT (CLEAN, ELEGANT, DORAEMON CELEBRATION & CAKE)      -->
+    <!-- ========================================================================= -->
+    <section class="screen-view" id="screen-vault">
+      <!-- Top Header -->
+      <div class="top-nav-bar">
+        <div class="status-pill pink-pill">
+          <span class="pulsing-dot pink"></span>
+          <span>PALAK'S VAULT 🌸</span>
+        </div>
+        <div class="candles-counter-pill" id="candlesLitCounter">
+          <span id="candlesLitCount">🎂</span> Wish Ready! ✨
+        </div>
+      </div>
+
+      <!-- Vault Header -->
+      <div class="vault-header">
+        <div class="vault-tag">🎉 BIRTHDAY WISH VAULT</div>
+        <h1 class="main-title">
+          Happy Birthday, <span class="handwritten-accent">Palak!</span> ✨
+        </h1>
+      </div>
+
+      <!-- Doraemon Party Host Banner (With CID Dialogue) -->
+      <div class="vault-cid-banner">
+        <div class="cid-quote-avatar">
+          <img src="assets/doraemon.png" alt="Inspector Doraemon">
+        </div>
+        <div class="cid-quote-body">
+          <div class="cid-badge-pill">CID CASE CLOSED 🎖️</div>
+          <p class="cid-quote-text">
+            <strong>Daya Sir:</strong> "Case closed! Suspect Palak ko officially 24 ghante mock test band karke
+            <strong>Birthday Queen</strong> banne ki permission di jaati hai!" 🎂👑
+          </p>
+        </div>
+      </div>
+
+      <!-- Hero Centerpiece: Doraemon Holding Birthday Cake Card -->
+      <div class="doraemon-cake-card" id="cakeCard">
+        <div class="doraemon-cake-stage" id="cakeScene">
+          <!-- Floating Ambient Sparkles -->
+          <div class="cake-sparkle s-1">✨</div>
+          <div class="cake-sparkle s-2">💖</div>
+          <div class="cake-sparkle s-3">⭐</div>
+          <div class="cake-sparkle s-4">🎉</div>
+
+          <!-- Blow-up Explosion Flash & Particle Layer -->
+          <div class="blowup-flash" id="blowupFlash"></div>
+          <div class="blowup-particles-box" id="blowupParticles"></div>
+
+          <!-- Doraemon Holding Cake Image Frame -->
+          <div class="doraemon-cake-frame" id="doraemonCakeFrame">
+            <img src="assets/doraemon_holding_cake.png" alt="Doraemon Holding Birthday Cake for Palak"
+              class="doraemon-holding-cake-img" id="doraemonCakeImg">
+            <!-- Glowing Candle Aura -->
+            <div class="candle-flame-glow" id="candleGlow"></div>
+          </div>
+
+          <!-- Tap to Blow Up Tag Pill -->
+          <div class="cake-blow-badge" id="cakeBlowPill">
+            <span class="blow-pill-icon">💥</span>
+            <span id="blowPillText">TAP CAKE TO BLOW UP &amp; MAKE A WISH! 🎂</span>
+            <span class="blow-pill-icon">✨</span>
+          </div>
+        </div>
+
+        <button class="cake-tap-badge" id="blowCandlesBtn">
+          <span class="blow-icon">🎂</span>
+          <span id="blowButtonText">Tap Cake to Blow Up &amp; Launch Birthday Wish! 💥✨</span>
+        </button>
+      </div>
+
+      <!-- Clean Birthday Action CTAs -->
+      <div class="vault-actions-group">
+        <!-- Read Letter Primary Button -->
+        <button class="primary-pill-btn letter-cta-btn" id="openFullLetterBtn">
+          <span>💌 Read Your Birthday Letter</span>
+          <span class="btn-arrow">➔</span>
+        </button>
+
+        <!-- Blow & Make Wish Button -->
+        <button class="primary-pill-btn grand-finale-btn" id="grandWishBtn">
+          <span>🎂 Blow Up Cake &amp; Make a Wish</span>
+          <span class="btn-arrow">✨</span>
+        </button>
+      </div>
+
+      <div class="footer-signoff">
+        Crafted with 💖 and endless laughter by Satyam Pandey for Palak Srivastava
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- MODAL: READABLE, AUTHENTIC BIRTHDAY LETTER OVERLAY                         -->
+    <!-- ========================================================================= -->
+    <div class="letter-modal-overlay hidden" id="letterModalOverlay">
+      <div class="letter-modal-card">
+        <button class="modal-close-btn" id="closeLetterModalBtn">✕</button>
+
+        <div class="envelope-top-bar">
+          <span class="envelope-stamp">DECLASSIFIED BIRTHDAY LETTER 💌</span>
+          <span class="envelope-confidential">CONFIDENTIAL</span>
+        </div>
+
+        <h2 class="modal-letter-title">
+          Hey <span class="letter-palak-name">Palak</span>,
+        </h2>
+
+        <div class="modal-letter-body">
+          <p>
+            Take an official, legally binding <strong>24-hour break</strong> from crushing government exam syllabuses
+            today! From random Class 2 eraser recoveries to watching you relentlessly chase your dreams today, it's
+            always an adventure.
+          </p>
+
+          <div class="letter-wishes-card">
+            <div class="wishes-heading">✦ May this year bring you:</div>
+            <ul class="letter-wishes-list">
+              <li>📜 <strong>100% accuracy</strong> on all mock tests (zero silly mistakes!)</li>
+              <li>🍫 <strong>Endless Dairy Milk Silk</strong> supplies delivered to your desk</li>
+              <li>🏛️ That official <strong>government posting letter</strong> with your name on it</li>
+              <li>🎂 <strong>Zero Himalayan monk thoughts</strong> for at least a week!</li>
+            </ul>
+          </div>
+
+          <p class="letter-closing">
+            Keep crushing your goals, staying awesome, and shining bright!
+          </p>
+
+          <div class="letter-signature-block">
+            <div class="signature-line">Always with you,</div>
+            <div class="letter-signature">— Satyam Pandey 💖</div>
+          </div>
+        </div>
+
+        <button class="primary-pill-btn" id="modalCelebrateBtn">
+          <span>Blast Birthday Confetti! 🎊</span>
+        </button>
+      </div>
+    </div>
+
+  </div> <!-- End Mobile App Shell -->
+
+
+  <!-- ========================================================================= -->
+  <!-- PERSISTENT MOBILE BOTTOM NAVIGATION BAR                                  -->
+  <!-- ========================================================================= -->
+  <nav class="bottom-nav-bar" id="bottomNavBar">
+    <button class="nav-tab-item active" data-target="screen-welcome" id="navWelcomeTab">
+      <span class="nav-icon">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          <path d="m9 12 2 2 4-4" />
+        </svg>
+      </span>
+      <span class="nav-label">Intro</span>
+      <span class="nav-lock-indicator">🔒</span>
+    </button>
+
+    <button class="nav-tab-item locked" data-target="screen-quiz" id="navQuizTab">
+      <span class="nav-icon">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10" />
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+          <line x1="12" y1="17" x2="12.01" y2="17" />
+        </svg>
+      </span>
+      <span class="nav-label">Quiz</span>
+      <span class="nav-lock-indicator">🔒</span>
+    </button>
+
+    <button class="nav-tab-item locked" data-target="screen-evolution" id="navEvolutionTab">
+      <span class="nav-icon">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
+          <polyline points="16 7 22 7 22 13" />
+        </svg>
+      </span>
+      <span class="nav-label">Evolution</span>
+      <span class="nav-lock-indicator">🔒</span>
+    </button>
+
+    <button class="nav-tab-item locked" data-target="screen-vault" id="navVaultTab">
+      <span class="nav-icon">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+        </svg>
+      </span>
+      <span class="nav-label">Vault</span>
+      <span class="nav-lock-indicator">🔒</span>
+    </button>
+  </nav>
+
+  <!-- Lock Alert Toast for Bottom Navigation -->
+  <div class="nav-lock-toast" id="navLockToast">
+    🔒 Complete the current step first to unlock this section!
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
