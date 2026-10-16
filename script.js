@@ -1097,7 +1097,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.fillStyle = '#2563EB';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText('Palak', 512, 587);
+        ctx.fillText('', 512, 587);
         ctx.restore();
 
         const cleanUrl = canvas.toDataURL('image/jpeg', 0.95);
