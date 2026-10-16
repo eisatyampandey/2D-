@@ -34,10 +34,10 @@ document.addEventListener('DOMContentLoaded', () => {
       osc.type = 'sine';
       osc.frequency.setValueAtTime(140, this.ctx.currentTime);
       osc.frequency.exponentialRampToValueAtTime(320, this.ctx.currentTime + 0.15);
-      
+
       gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.15);
-      
+
       osc.connect(gain);
       gain.connect(this.ctx.destination);
       osc.start();
@@ -53,10 +53,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const gain = this.ctx.createGain();
         osc.type = 'triangle';
         osc.frequency.setValueAtTime(freq, this.ctx.currentTime + idx * 0.08);
-        
+
         gain.gain.setValueAtTime(0.15, this.ctx.currentTime + idx * 0.08);
         gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + idx * 0.08 + 0.35);
-        
+
         osc.connect(gain);
         gain.connect(this.ctx.destination);
         osc.start(this.ctx.currentTime + idx * 0.08);
@@ -72,10 +72,10 @@ document.addEventListener('DOMContentLoaded', () => {
       osc.type = 'sawtooth';
       osc.frequency.setValueAtTime(220, this.ctx.currentTime);
       osc.frequency.linearRampToValueAtTime(160, this.ctx.currentTime + 0.25);
-      
+
       gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.25);
-      
+
       osc.connect(gain);
       gain.connect(this.ctx.destination);
       osc.start();
@@ -93,16 +93,16 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       const noise = this.ctx.createBufferSource();
       noise.buffer = buffer;
-      
+
       const filter = this.ctx.createBiquadFilter();
       filter.type = 'lowpass';
       filter.frequency.setValueAtTime(600, this.ctx.currentTime);
       filter.frequency.exponentialRampToValueAtTime(80, this.ctx.currentTime + 0.3);
-      
+
       const gain = this.ctx.createGain();
       gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.3);
-      
+
       noise.connect(filter);
       filter.connect(gain);
       gain.connect(this.ctx.destination);
@@ -118,10 +118,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const gain = this.ctx.createGain();
         osc.type = 'sine';
         osc.frequency.setValueAtTime(freq, this.ctx.currentTime + idx * 0.1);
-        
+
         gain.gain.setValueAtTime(0.18, this.ctx.currentTime + idx * 0.1);
         gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + idx * 0.1 + 0.5);
-        
+
         osc.connect(gain);
         gain.connect(this.ctx.destination);
         osc.start(this.ctx.currentTime + idx * 0.1);
@@ -148,45 +148,91 @@ document.addEventListener('DOMContentLoaded', () => {
         this.ctx.resume();
       }
       this.isPlayingBgm = true;
-      // "Happy Birthday to You" tune notes:
-      // G4, G4, A4, G4, C5, B4
-      // G4, G4, A4, G4, D5, C5
-      // G4, G4, G5, E5, C5, B4, A4
-      // F5, F5, E5, C5, D5, C5
-      const song = [
-        { f: 392.00, d: 0.3 }, { f: 392.00, d: 0.3 }, { f: 440.00, d: 0.6 }, { f: 392.00, d: 0.6 }, { f: 523.25, d: 0.6 }, { f: 493.88, d: 1.1 },
-        { f: 392.00, d: 0.3 }, { f: 392.00, d: 0.3 }, { f: 440.00, d: 0.6 }, { f: 392.00, d: 0.6 }, { f: 587.33, d: 0.6 }, { f: 523.25, d: 1.1 },
-        { f: 392.00, d: 0.3 }, { f: 392.00, d: 0.3 }, { f: 783.99, d: 0.6 }, { f: 659.25, d: 0.6 }, { f: 523.25, d: 0.6 }, { f: 493.88, d: 0.6 }, { f: 440.00, d: 0.9 },
-        { f: 698.46, d: 0.3 }, { f: 698.46, d: 0.3 }, { f: 659.25, d: 0.6 }, { f: 523.25, d: 0.6 }, { f: 587.33, d: 0.6 }, { f: 523.25, d: 1.4 }
+
+      // 1. Try playing the custom song (assets/vault_bgm.mp3) if you saved it in assets/
+      if (!this.bgmAudio) {
+        this.bgmAudio = new Audio('assets/vault_bgm.mp3');
+        this.bgmAudio.loop = true;
+        this.bgmAudio.volume = 0.45;
+      }
+
+      this.bgmAudio.play().catch(() => {
+        // 2. Built-in Peaceful, Sweet & Dreamy Music-Box Lullaby (if no mp3 file is in assets/)
+        this.playSweetLullabyLoop();
+      });
+    }
+
+    playSweetLullabyLoop() {
+      if (!this.isPlayingBgm) return;
+
+      // Peaceful, warm, slow-tempo music box & soft pad notes (F Major -> C Major -> Dm -> Bb)
+      // Sounds like an emotional anime / music-box ending theme
+      const sweetChords = [
+        { melody: 523.25, bass: 174.61, fifth: 261.63, d: 1.4 }, // C5 over F
+        { melody: 587.33, bass: 261.63, fifth: 329.63, d: 1.2 }, // D5 over F/A
+        { melody: 659.25, bass: 130.81, fifth: 196.00, d: 1.6 }, // E5 over C
+        { melody: 523.25, bass: 196.00, fifth: 246.94, d: 1.4 }, // C5 gentle breath
+        { melody: 698.46, bass: 146.83, fifth: 220.00, d: 1.5 }, // F5 over Dm
+        { melody: 659.25, bass: 220.00, fifth: 261.63, d: 1.3 }, // E5 soft step
+        { melody: 587.33, bass: 116.54, fifth: 174.61, d: 1.6 }, // D5 over Bb
+        { melody: 523.25, bass: 130.81, fifth: 196.00, d: 2.2 }, // C5 warm resolution
+        { melody: 440.00, bass: 174.61, fifth: 220.00, d: 1.4 }, // A4 tender note
+        { melody: 523.25, bass: 220.00, fifth: 261.63, d: 1.4 }, // C5 rising
+        { melody: 587.33, bass: 146.83, fifth: 220.00, d: 1.6 }, // D5 heartfelt
+        { melody: 523.25, bass: 174.61, fifth: 261.63, d: 2.6 }  // C5 peaceful hold
       ];
 
-      let noteIndex = 0;
-      const playNext = () => {
-        if (!this.isPlayingBgm) return;
-        const current = song[noteIndex];
-        
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(current.f, this.ctx.currentTime);
-        
-        gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + current.d);
-        
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start();
-        osc.stop(this.ctx.currentTime + current.d);
+      let stepIndex = 0;
 
-        noteIndex = (noteIndex + 1) % song.length;
-        this.bgmTimer = setTimeout(playNext, current.d * 900);
+      const playNextChord = () => {
+        if (!this.isPlayingBgm) return;
+        const now = this.ctx.currentTime;
+        const step = sweetChords[stepIndex];
+
+        // A. Warm, soft underlying pad (Sine wave with gentle fade-in and long fade-out)
+        [step.bass, step.fifth].forEach((freq) => {
+          const padOsc = this.ctx.createOscillator();
+          const padGain = this.ctx.createGain();
+          padOsc.type = 'sine';
+          padOsc.frequency.setValueAtTime(freq, now);
+
+          padGain.gain.setValueAtTime(0.001, now);
+          padGain.gain.linearRampToValueAtTime(0.035, now + 0.35);
+          padGain.gain.exponentialRampToValueAtTime(0.0008, now + step.d * 1.4);
+
+          padOsc.connect(padGain);
+          padGain.connect(this.ctx.destination);
+          padOsc.start(now);
+          padOsc.stop(now + step.d * 1.45);
+        });
+
+        // B. Delicate Music-Box Bell Note (Pure sine with soft chime harmonic)
+        const bellOsc = this.ctx.createOscillator();
+        const bellGain = this.ctx.createGain();
+        bellOsc.type = 'sine';
+        bellOsc.frequency.setValueAtTime(step.melody, now);
+
+        bellGain.gain.setValueAtTime(0.001, now);
+        bellGain.gain.linearRampToValueAtTime(0.055, now + 0.06);
+        bellGain.gain.exponentialRampToValueAtTime(0.0008, now + step.d * 1.3);
+
+        bellOsc.connect(bellGain);
+        bellGain.connect(this.ctx.destination);
+        bellOsc.start(now);
+        bellOsc.stop(now + step.d * 1.35);
+
+        stepIndex = (stepIndex + 1) % sweetChords.length;
+        this.bgmTimer = setTimeout(playNextChord, step.d * 1000);
       };
 
-      playNext();
+      playNextChord();
     }
 
     stopBGM() {
       this.isPlayingBgm = false;
+      if (this.bgmAudio) {
+        this.bgmAudio.pause();
+      }
       if (this.bgmTimer) {
         clearTimeout(this.bgmTimer);
         this.bgmTimer = null;
@@ -268,7 +314,7 @@ document.addEventListener('DOMContentLoaded', () => {
   try {
     localStorage.clear();
     sessionStorage.clear();
-  } catch (e) {}
+  } catch (e) { }
 
   // Strict First-Time Progression State (Per Visit)
   // Initially only screen-welcome is unlocked.
@@ -436,7 +482,7 @@ document.addEventListener('DOMContentLoaded', () => {
     audio.init();
     audio.playScanPulse();
     haptic([30, 40]);
-    
+
     fingerprintBtn.classList.add('scanning');
     scanProgressBar.classList.add('active');
     scanHint.textContent = 'Calibrating Palak heartbeat... 💖';
@@ -476,7 +522,7 @@ document.addEventListener('DOMContentLoaded', () => {
     fingerprintBtn.style.boxShadow = '0 0 35px rgba(16, 185, 129, 0.6)';
     scanHint.textContent = 'Doraemon: Clearance Approved! Welcome Palak! 🔓✨';
     scanHint.style.color = '#10B981';
-    
+
     audio.playCorrectChime();
     haptic([40, 80, 50, 150]);
     fireConfetti({ count: 65, spread: 75 });
@@ -974,7 +1020,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     stageCounterPill.textContent = `STAGE ${idx + 1} OF 4`;
-    
+
     // Smooth image transition
     evolutionImg.style.opacity = '0.3';
     setTimeout(() => {
@@ -1014,96 +1060,82 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Stage 4 Composite Generator: Palak at 23 with stylish goggles & cheering Doraemon
+  // Stage 4 Composite & Clean Photo Layout (Only affects Evolution section)
   function generateStage4Composite() {
+    // 1. Move the Squad Badges & Inspector Quote right below the photo frame
+    // so they never cover Palak's face, the cake, or Doraemon!
+    const photoFrame = document.querySelector('#screen-evolution .evolution-photo-frame');
+    const squadOverlay = document.getElementById('stage4SquadOverlay');
+    const peekingBanner = document.querySelector('#screen-evolution .peeking-avatar-banner');
+
+    if (photoFrame && photoFrame.parentNode) {
+      // Show the full square artwork clearly without cropping out the cake or Doraemon
+      photoFrame.style.aspectRatio = '1 / 1';
+
+      if (peekingBanner && peekingBanner.parentNode === photoFrame) {
+        photoFrame.insertAdjacentElement('afterend', peekingBanner);
+        Object.assign(peekingBanner.style, {
+          position: 'static',
+          margin: '10px 12px 0 12px',
+          background: '#FFFDF9',
+          border: '1px solid #F6E6EB',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
+        });
+      }
+
+      if (squadOverlay && squadOverlay.parentNode === photoFrame) {
+        photoFrame.insertAdjacentElement('afterend', squadOverlay);
+        Object.assign(squadOverlay.style, {
+          position: 'static',
+          padding: '10px 10px 2px 10px',
+          pointerEvents: 'auto'
+        });
+      }
+    }
+
+    // 2. Keep stage4.jpg clean (no floating orange rectangles or duplicate Doraemon)
+    // and gently update the cake icing text to "Palak"
     const baseImg = new Image();
     baseImg.src = 'assets/stage4.jpg';
 
-    const doraImg = new Image();
-    doraImg.src = 'assets/doraemon_happy.png';
+    baseImg.onload = () => {
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = 1024;
+        canvas.height = 1024;
+        const ctx = canvas.getContext('2d');
 
-    let loaded = 0;
-    const onLoaded = () => {
-      loaded++;
-      if (loaded === 2) {
-        try {
-          const canvas = document.createElement('canvas');
-          canvas.width = 1024;
-          canvas.height = 1024;
-          const ctx = canvas.getContext('2d');
+        // Draw original clean 23-year-old birthday artwork
+        ctx.drawImage(baseImg, 0, 0, 1024, 1024);
 
-          // 1. Draw base 23-year-old birthday queen photo
-          ctx.drawImage(baseImg, 0, 0, 1024, 1024);
-
-          // 2. Draw stylish party goggles / glasses on Palak
-          ctx.save();
-          ctx.lineWidth = 10;
-          ctx.strokeStyle = '#FDE047'; // Sunshine yellow / gold frame
-          ctx.fillStyle = 'rgba(255, 182, 193, 0.58)'; // Baby-pink tinted lenses
-          ctx.shadowColor = 'rgba(245, 158, 11, 0.6)';
-          ctx.shadowBlur = 12;
-
-          // Left lens
-          ctx.beginPath();
-          if (ctx.roundRect) {
-            ctx.roundRect(400, 245, 105, 68, 22);
-          } else {
-            ctx.ellipse(452, 279, 52, 34, 0, 0, Math.PI * 2);
-          }
-          ctx.fill();
-          ctx.stroke();
-
-          // Right lens
-          ctx.beginPath();
-          if (ctx.roundRect) {
-            ctx.roundRect(520, 245, 105, 68, 22);
-          } else {
-            ctx.ellipse(572, 279, 52, 34, 0, 0, Math.PI * 2);
-          }
-          ctx.fill();
-          ctx.stroke();
-
-          // Golden bridge
-          ctx.beginPath();
-          ctx.moveTo(505, 278);
-          ctx.lineTo(520, 278);
-          ctx.stroke();
-
-          // Cute lens glint
-          ctx.fillStyle = '#FFFFFF';
-          ctx.beginPath();
-          ctx.arc(425, 260, 6, 0, Math.PI * 2);
-          ctx.arc(545, 260, 6, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.restore();
-
-          // 3. Draw cheering Doraemon celebrating beside the cake (bottom-left)
-          ctx.save();
-          ctx.shadowColor = 'rgba(0,0,0,0.35)';
-          ctx.shadowBlur = 16;
-          ctx.drawImage(doraImg, 15, 600, 360, 380);
-
-          // 4. Cheerful overlay pill
-          ctx.font = 'bold 30px "Plus Jakarta Sans", sans-serif';
-          ctx.fillStyle = '#FFFFFF';
-          ctx.shadowColor = '#EC4899';
-          ctx.shadowBlur = 12;
-          ctx.fillText('🎂 Palak @ 23! 💖', 50, 615);
-          ctx.restore();
-
-          const compositeUrl = canvas.toDataURL('image/jpeg', 0.94);
-          evolutionStages[3].image = compositeUrl;
-          if (currentStageIdx === 3 && evolutionImg) {
-            evolutionImg.src = compositeUrl;
-          }
-        } catch (e) {
-          // Keep base image if canvas is restricted
+        // Gently patch cake icing text ("Khushi" -> "Palak")
+        ctx.save();
+        ctx.fillStyle = '#FFFDF7';
+        ctx.beginPath();
+        if (ctx.roundRect) {
+          ctx.roundRect(472, 574, 80, 24, 6);
+        } else {
+          ctx.rect(472, 574, 80, 24);
         }
+        ctx.fill();
+
+        ctx.font = 'bold 20px "Plus Jakarta Sans", sans-serif';
+        ctx.fillStyle = '#2563EB';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('Palak', 512, 587);
+        ctx.restore();
+
+        const cleanUrl = canvas.toDataURL('image/jpeg', 0.95);
+        evolutionStages[3].image = cleanUrl;
+        if (currentStageIdx === 3 && evolutionImg) {
+          evolutionImg.src = cleanUrl;
+        }
+      } catch (e) {
+        // Fallback to original image if canvas is restricted
+        evolutionStages[3].image = 'assets/stage4.jpg';
       }
     };
-
-    baseImg.onload = onLoaded;
-    doraImg.onload = onLoaded;
   }
 
   generateStage4Composite();
@@ -1167,7 +1199,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   renderStage(0);
-
 
   // =========================================================================
   // 6. ACT 3: BIRTHDAY CAKE, CANDLE BLOWING & WISH VAULT
