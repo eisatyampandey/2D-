@@ -1084,7 +1084,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Gently patch cake icing text ("Khushi" -> "Palak")
         ctx.save();
-        ctx.fillStyle = '';
+        ctx.fillStyle = '#ffffff00';
         ctx.beginPath();
         if (ctx.roundRect) {
           ctx.roundRect(472, 574, 80, 24, 6);
