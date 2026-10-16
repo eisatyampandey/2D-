@@ -414,61 +414,138 @@
         </h1>
       </div>
 
-      <!-- Doraemon Party Host Banner (With CID Dialogue) -->
-      <div class="vault-cid-banner">
-        <div class="cid-quote-avatar">
-          <img src="assets/doraemon.png" alt="Inspector Doraemon">
-        </div>
-        <div class="cid-quote-body">
-          <div class="cid-badge-pill">CID CASE CLOSED 🎖️</div>
-          <p class="cid-quote-text">
-            <strong>Daya Sir:</strong> "Case closed! Suspect Palak ko officially 24 ghante mock test band karke
-            <strong>Birthday Queen</strong> banne ki permission di jaati hai!" 🎂👑
-          </p>
-        </div>
-      </div>
+      <!-- In-Place 3D Transition: Centerpiece 3D Flip Card Container -->
+      <div class="vault-flip-stage" id="vaultFlipStage">
+        <div class="vault-3d-card" id="vault3dCard">
 
-      <!-- Hero Centerpiece: Doraemon Holding Birthday Cake Card -->
-      <div class="doraemon-cake-card" id="cakeCard">
-        <div class="doraemon-cake-stage" id="cakeScene">
-          <!-- Floating Ambient Sparkles -->
-          <div class="cake-sparkle s-1">✨</div>
-          <div class="cake-sparkle s-2">💖</div>
-          <div class="cake-sparkle s-3">⭐</div>
-          <div class="cake-sparkle s-4">🎉</div>
+          <!-- ======================================================== -->
+          <!-- VIEW 1: FRONT FACE (HERO DESIGN & 3D PHOTO FRAME)        -->
+          <!-- ======================================================== -->
+          <div class="card-face card-face-front" id="cardFaceFront">
+            <!-- Doraemon Party Host Banner (With CID Dialogue) -->
+            <div class="vault-cid-banner">
+              <div class="cid-quote-avatar">
+                <img src="assets/doraemon.png" alt="Inspector Doraemon">
+              </div>
+              <div class="cid-quote-body">
+                <div class="cid-badge-pill">CID CASE CLOSED 🎖️</div>
+                <p class="cid-quote-text">
+                  <strong>Daya Sir:</strong> "Case closed! Suspect Palak ko officially 24 ghante mock test band karke
+                  <strong>Birthday Queen</strong> banne ki permission di jaati hai!" 🎂👑
+                </p>
+              </div>
+            </div>
 
-          <!-- Blow-up Explosion Flash & Particle Layer -->
-          <div class="blowup-flash" id="blowupFlash"></div>
-          <div class="blowup-particles-box" id="blowupParticles"></div>
+            <!-- Hero Centerpiece: Doraemon Holding Birthday Cake Card -->
+            <div class="doraemon-cake-card" id="cakeCard">
+              <div class="doraemon-cake-stage" id="cakeScene">
+                <!-- Floating Ambient Sparkles -->
+                <div class="cake-sparkle s-1">✨</div>
+                <div class="cake-sparkle s-2">💖</div>
+                <div class="cake-sparkle s-3">⭐</div>
+                <div class="cake-sparkle s-4">🎉</div>
 
-          <!-- Doraemon Holding Cake Image Frame -->
-          <div class="doraemon-cake-frame" id="doraemonCakeFrame">
-            <img src="assets/doraemon_holding_cake.png" alt="Doraemon Holding Birthday Cake for Palak"
-              class="doraemon-holding-cake-img" id="doraemonCakeImg">
-            <!-- Glowing Candle Aura -->
-            <div class="candle-flame-glow" id="candleGlow"></div>
+                <!-- Blow-up Explosion Flash & Particle Layer -->
+                <div class="blowup-flash" id="blowupFlash"></div>
+                <div class="blowup-particles-box" id="blowupParticles"></div>
+
+                <!-- Doraemon Holding Cake Image Frame -->
+                <div class="doraemon-cake-frame" id="doraemonCakeFrame">
+                  <img src="assets/doraemon_holding_cake.png" alt="Doraemon Holding Birthday Cake for Palak"
+                    class="doraemon-holding-cake-img" id="doraemonCakeImg">
+                  <!-- Glowing Candle Aura -->
+                  <div class="candle-flame-glow" id="candleGlow"></div>
+                </div>
+
+                <!-- Tap to Blow Up Tag Pill -->
+                <div class="cake-blow-badge" id="cakeBlowPill">
+                  <span class="blow-pill-icon">💥</span>
+                  <span id="blowPillText">TAP CAKE TO BLOW UP &amp; MAKE A WISH! 🎂</span>
+                  <span class="blow-pill-icon">✨</span>
+                </div>
+              </div>
+
+              <button class="cake-tap-badge" id="blowCandlesBtn">
+                <span class="blow-icon">🎂</span>
+                <span id="blowButtonText">Tap Cake to Blow Up &amp; Launch Wish! 💥✨</span>
+              </button>
+            </div>
+
+            <!-- In-Frame Glass Bottom Bar: Read My Note ✨ (Triggers 3D Flip) -->
+            <div class="card-glass-bottom-bar">
+              <button class="glass-bar-btn flip-to-note-btn" id="flipToNoteInnerBtn">
+                <span class="glass-btn-icon">💌</span>
+                <span class="glass-btn-text">Read My Note ✨</span>
+                <span class="glass-btn-arrow">🔄 3D Flip</span>
+              </button>
+            </div>
           </div>
 
-          <!-- Tap to Blow Up Tag Pill -->
-          <div class="cake-blow-badge" id="cakeBlowPill">
-            <span class="blow-pill-icon">💥</span>
-            <span id="blowPillText">TAP CAKE TO BLOW UP &amp; MAKE A WISH! 🎂</span>
-            <span class="blow-pill-icon">✨</span>
-          </div>
-        </div>
+          <!-- ======================================================== -->
+          <!-- VIEW 2: BACK FACE (BIRTHDAY NOTE IN CLEAN, LARGE 16-18PX) -->
+          <!-- ======================================================== -->
+          <div class="card-face card-face-back" id="cardFaceBack">
+            <!-- Envelope Top Header Bar -->
+            <div class="note-card-header">
+              <div class="envelope-stamp">DECLASSIFIED BIRTHDAY LETTER 💌</div>
+              <div class="envelope-confidential">CONFIDENTIAL</div>
+              <button class="in-card-close-btn" id="flipBackMiniBtn" title="Back to Cake">↺</button>
+            </div>
 
-        <button class="cake-tap-badge" id="blowCandlesBtn">
-          <span class="blow-icon">🎂</span>
-          <span id="blowButtonText">Tap Cake to Blow Up &amp; Launch Birthday Wish! 💥✨</span>
-        </button>
+            <!-- Greeting -->
+            <h2 class="note-card-title">
+              Hey <span class="letter-palak-name">Palak</span>,
+            </h2>
+
+            <!-- Large Readable Note Body (Clean 16px - 18px text) -->
+            <div class="note-card-body">
+              <p class="note-lead-text">
+                Take an official, legally binding <strong>24-hour break</strong> from crushing government exam syllabuses
+                today! From random Class 2 eraser recoveries to watching you relentlessly chase your dreams today, it's
+                always an adventure.
+              </p>
+
+              <!-- Wishes Checklist Card -->
+              <div class="note-wishes-card">
+                <div class="wishes-heading">✦ May this year bring you:</div>
+                <ul class="note-wishes-list">
+                  <li>📜 <strong>100% accuracy</strong> on all mock tests (zero silly mistakes!)</li>
+                  <li>🍫 <strong>Endless Dairy Milk Silk</strong> supplies delivered to your desk</li>
+                  <li>🏛️ That official <strong>government posting letter</strong> with your name on it</li>
+                  <li>🎂 <strong>Zero Himalayan monk thoughts</strong> for at least a week!</li>
+                </ul>
+              </div>
+
+              <p class="note-closing-text">
+                Keep crushing your goals, staying awesome, and shining bright!
+              </p>
+
+              <div class="note-signature-block">
+                <div class="signature-line">Always with you,</div>
+                <div class="letter-signature">— Satyam Pandey 💖</div>
+              </div>
+            </div>
+
+            <!-- In-Frame Glass Bottom Bar for Back Face -->
+            <div class="card-glass-bottom-bar back-glass-bar">
+              <button class="glass-bar-btn flip-back-btn" id="flipBackInnerBtn">
+                <span>↺ Back to Cake 🎂</span>
+              </button>
+              <button class="glass-bar-btn blast-confetti-btn" id="blastConfettiInnerBtn">
+                <span>Blast Confetti! 🎊</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
       </div>
 
       <!-- Clean Birthday Action CTAs -->
       <div class="vault-actions-group">
-        <!-- Read Letter Primary Button -->
+        <!-- Read Note / Flip Primary Button -->
         <button class="primary-pill-btn letter-cta-btn" id="openFullLetterBtn">
-          <span>💌 Read Your Birthday Letter</span>
-          <span class="btn-arrow">➔</span>
+          <span id="toggleNoteBtnText">💌 Read My Note ✨</span>
+          <span class="btn-arrow" id="toggleNoteBtnIcon">➔</span>
         </button>
 
         <!-- Blow & Make Wish Button -->

@@ -1301,7 +1301,18 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   if (blowCandlesBtn) blowCandlesBtn.addEventListener('click', handleCakeBlowUp);
-  if (grandWishBtn) grandWishBtn.addEventListener('click', handleCakeBlowUp);
+  if (grandWishBtn) {
+    grandWishBtn.addEventListener('click', () => {
+      if (typeof isVaultCardFlipped !== 'undefined' && isVaultCardFlipped) {
+        flipVaultCard(false);
+        setTimeout(() => {
+          handleCakeBlowUp();
+        }, 400);
+      } else {
+        handleCakeBlowUp();
+      }
+    });
+  }
   if (cakeCard) {
     cakeCard.addEventListener('click', (e) => {
       if (e.target.closest('#cakeScene') || e.target.closest('#doraemonCakeFrame')) {
@@ -1368,33 +1379,142 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Full Read Letter Modal
+  // =========================================================================
+  // IN-PLACE 3D TRANSITION: 3D CARD FLIPPING SYSTEM
+  // =========================================================================
+  const vault3dCard = document.getElementById('vault3dCard');
+  const flipToNoteInnerBtn = document.getElementById('flipToNoteInnerBtn');
+  const flipBackInnerBtn = document.getElementById('flipBackInnerBtn');
+  const flipBackMiniBtn = document.getElementById('flipBackMiniBtn');
+  const blastConfettiInnerBtn = document.getElementById('blastConfettiInnerBtn');
   const openFullLetterBtn = document.getElementById('openFullLetterBtn');
+  const toggleNoteBtnText = document.getElementById('toggleNoteBtnText');
+  const toggleNoteBtnIcon = document.getElementById('toggleNoteBtnIcon');
+  const noteCardBody = document.querySelector('.note-card-body');
+
+  let isVaultCardFlipped = false;
+
+  function flipVaultCard(toNote = null) {
+    if (!vault3dCard) return;
+    audio.init();
+
+    if (toNote === null) {
+      isVaultCardFlipped = !isVaultCardFlipped;
+    } else {
+      isVaultCardFlipped = toNote;
+    }
+
+    if (isVaultCardFlipped) {
+      vault3dCard.classList.add('is-flipped');
+      audio.playCorrectChime();
+      haptic([35, 45]);
+      if (toggleNoteBtnText) toggleNoteBtnText.textContent = '🎂 Back to Cake View ↺';
+      if (toggleNoteBtnIcon) toggleNoteBtnIcon.textContent = '↺';
+      if (noteCardBody) noteCardBody.scrollTop = 0;
+    } else {
+      vault3dCard.classList.remove('is-flipped');
+      audio.playCorrectChime();
+      haptic([35, 45]);
+      if (toggleNoteBtnText) toggleNoteBtnText.textContent = '💌 Read My Note ✨';
+      if (toggleNoteBtnIcon) toggleNoteBtnIcon.textContent = '➔';
+    }
+  }
+
+  // 1. In-Frame Glass Button on Front Face ("Read My Note ✨")
+  if (flipToNoteInnerBtn) {
+    flipToNoteInnerBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      flipVaultCard(true);
+    });
+  }
+
+  // 2. In-Frame Glass Button on Back Face ("↺ Back to Cake 🎂")
+  if (flipBackInnerBtn) {
+    flipBackInnerBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      flipVaultCard(false);
+    });
+  }
+
+  // 3. Mini ↺ Close Button in Card Header
+  if (flipBackMiniBtn) {
+    flipBackMiniBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      flipVaultCard(false);
+    });
+  }
+
+  // 4. Primary Pill Action Button below Card ("💌 Read My Note ✨" / "🎂 Back to Cake View ↺")
+  if (openFullLetterBtn) {
+    openFullLetterBtn.addEventListener('click', () => {
+      flipVaultCard();
+    });
+  }
+
+  // 5. Blast Confetti Button on Back Face
+  if (blastConfettiInnerBtn) {
+    blastConfettiInnerBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      audio.init();
+      audio.playFanfare();
+      fireConfetti({ count: 90, spread: 110, origin: { x: 0.5, y: 0.5 } });
+      haptic([40, 60, 40, 80]);
+    });
+  }
+
+  // 6. Touch Swipe on 3D Card (horizontal swipe gesture to flip between front & back)
+  if (vault3dCard) {
+    let cardTouchStartX = 0;
+    let cardTouchStartY = 0;
+
+    vault3dCard.addEventListener('touchstart', (e) => {
+      cardTouchStartX = e.changedTouches[0].screenX;
+      cardTouchStartY = e.changedTouches[0].screenY;
+    }, { passive: true });
+
+    vault3dCard.addEventListener('touchend', (e) => {
+      const diffX = e.changedTouches[0].screenX - cardTouchStartX;
+      const diffY = e.changedTouches[0].screenY - cardTouchStartY;
+
+      // Trigger only if horizontal swipe is clearly intentional
+      if (Math.abs(diffX) > 40 && Math.abs(diffX) > Math.abs(diffY) * 1.4) {
+        if (diffX < 0 && !isVaultCardFlipped) {
+          // Swipe left -> flip to note
+          flipVaultCard(true);
+        } else if (diffX > 0 && isVaultCardFlipped) {
+          // Swipe right -> flip to cake
+          flipVaultCard(false);
+        }
+      }
+    }, { passive: true });
+  }
+
+  // Optional Fallback Modal Listeners (if modal is opened)
   const letterModalOverlay = document.getElementById('letterModalOverlay');
   const closeLetterModalBtn = document.getElementById('closeLetterModalBtn');
   const modalCelebrateBtn = document.getElementById('modalCelebrateBtn');
 
-  openFullLetterBtn.addEventListener('click', () => {
-    audio.init();
-    audio.playCorrectChime();
-    letterModalOverlay.classList.remove('hidden');
-  });
-
-  closeLetterModalBtn.addEventListener('click', () => {
-    letterModalOverlay.classList.add('hidden');
-  });
-
-  letterModalOverlay.addEventListener('click', (e) => {
-    if (e.target === letterModalOverlay) {
+  if (closeLetterModalBtn && letterModalOverlay) {
+    closeLetterModalBtn.addEventListener('click', () => {
       letterModalOverlay.classList.add('hidden');
-    }
-  });
+    });
+  }
 
-  modalCelebrateBtn.addEventListener('click', () => {
-    audio.init();
-    audio.playFanfare();
-    fireConfetti({ count: 90, spread: 100 });
-    haptic([40, 60, 40, 80]);
-  });
+  if (letterModalOverlay) {
+    letterModalOverlay.addEventListener('click', (e) => {
+      if (e.target === letterModalOverlay) {
+        letterModalOverlay.classList.add('hidden');
+      }
+    });
+  }
+
+  if (modalCelebrateBtn) {
+    modalCelebrateBtn.addEventListener('click', () => {
+      audio.init();
+      audio.playFanfare();
+      fireConfetti({ count: 90, spread: 100 });
+      haptic([40, 60, 40, 80]);
+    });
+  }
 
 });
