@@ -1559,3 +1559,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
+// =========================================================================
+  // 7. BAD-INTERNET OPTIMIZER: SILENT BACKGROUND ASSET PRELOADER
+  // =========================================================================
+  function preloadAllAssetsForSlowInternet() {
+    const criticalImages = [
+      'assets/doraemon.png',
+      'assets/doraemon_security.png',
+      'assets/doraemon_happy.png',
+      'assets/doraemon_sad.png',
+      'assets/doraemon_holding_cake.png',
+      'assets/stage1.jpg',
+      'assets/stage2.jpg',
+      'assets/stage3.jpg',
+      'assets/stage4.jpg'
+    ];
+
+    // Wait 1 second after initial page load so Screen 1 opens super fast first,
+    // then silently cache all remaining images in the background!
+    setTimeout(() => {
+      criticalImages.forEach((src) => {
+        const img = new Image();
+        img.decoding = 'async';
+        img.src = src;
+      });
+    }, 1000);
+  }
+
+  preloadAllAssetsForSlowInternet();
+
