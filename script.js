@@ -38,10 +38,39 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2. Custom Correct Answer Sound (MP3)
     playCorrectChime() {
       this.init();
+      const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+      notes.forEach((freq, idx) => {
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, this.ctx.currentTime + idx * 0.08);
+        
+        gain.gain.setValueAtTime(0.15, this.ctx.currentTime + idx * 0.08);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + idx * 0.08 + 0.35);
+        
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(this.ctx.currentTime + idx * 0.08);
+        osc.stop(this.ctx.currentTime + idx * 0.08 + 0.35);
+        });
+    }
+
+    playQuizRightSound() {
+      this.init();
       try {
         const rightAudio = new Audio('assets/right_sound.mp3');
-        rightAudio.volume = 0.6;
+        rightAudio.volume = 0.65;
         rightAudio.play().catch(() => {});
+      } catch (e) {}
+    }
+
+    // Plays ONLY on Q&A Question 4 (Final Question)
+    playQuizFinalSound() {
+      this.init();
+      try {
+        const finalAudio = new Audio('assets/final_correct_sound.mp3');
+        finalAudio.volume = 0.75;
+        finalAudio.play().catch(() => {});
       } catch (e) {}
     }
 
@@ -767,10 +796,16 @@ document.addEventListener('DOMContentLoaded', () => {
     audio.init();
 
     if (option.isCorrect) {
-      // --- CORRECT ANSWER BEHAVIOR ---
+      // --- CORRECT ANSWER BEHAVIOR (Q&A ONLY SOUND) ---
       hasAnsweredCorrectly = true;
       cardElement.classList.add('correct');
-      audio.playCorrectChime();
+
+      if (currentQuestionIdx === 3) {
+        audio.playQuizFinalSound(); // Plays final_correct_sound.mp3 on Question 4
+      } else {
+        audio.playQuizRightSound(); // Plays right_sound.mp3 on Questions 1, 2, 3
+      }
+
       haptic([50, 80, 50, 150]);
       fireConfetti({ count: 55, spread: 70 });
 
@@ -1523,3 +1558,4 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 });
+
