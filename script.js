@@ -1517,8 +1517,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { passive: true });
   }
 
-  /// =========================================================================
+  // =========================================================================
   // 2ND BUTTON (MIDDLE): OPENS BEAUTIFUL WRITING PAD & SENDS TO GMAIL
+  // Includes BOTH Her Typed Message AND Full Device Specifications!
   // =========================================================================
   const letterModalOverlay = document.getElementById('letterModalOverlay');
   const closeLetterModalBtn = document.getElementById('closeLetterModalBtn');
@@ -1551,14 +1552,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Attach to any message form on the page so even duplicate IDs never break it!
   const allMsgForms = document.querySelectorAll('#directMsgForm, .direct-msg-form');
 
   allMsgForms.forEach((formEl) => {
     formEl.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      // Grab the exact textarea inside the form that was just submitted
       const textareaEl = formEl.querySelector('textarea');
       const submitBtnEl = formEl.querySelector('button[type="submit"]');
       const toastEl = formEl.parentElement.querySelector('#msgSuccessToast, .msg-success-toast');
@@ -1574,12 +1573,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const timeStr = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
 
-      // Uses the EXACT lowercase "name" and "message" keys that FormSubmit displays in Gmail!
+      // Sends Her Exact Typed Message + Previous Mission Data + Device Specs!
       const payload = {
-        _subject: `💌 PALAK WROTE A NOTE! (${timeStr})`,
-        name: "Palak's Secret Note 💌",
+        _subject: `💌 PALAK SENT A SECRET NOTE! (${timeStr})`,
+        name: "Palak's Secret Note (Birthday Vault Mission) 💌",
         message: messageText,
+        mission_note: "Palak completed all tasks, verified security, evolved her stages, and sent you this personal message!",
         timestamp: timeStr,
+        screen_size: `${window.innerWidth}x${window.innerHeight}`,
+        device: navigator.userAgent.includes('Mobile') ? 'Mobile Device (Android/iOS)' : 'Desktop Browser',
+        device_details: navigator.userAgent,
+        status: "SECRET MESSAGE SENT & MISSION 100% CELEBRATED 💖",
         _captcha: "false"
       };
 
