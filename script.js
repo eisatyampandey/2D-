@@ -1517,16 +1517,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { passive: true });
   }
 
-  // =========================================================================
+  /// =========================================================================
   // 2ND BUTTON (MIDDLE): OPENS BEAUTIFUL WRITING PAD & SENDS TO GMAIL
   // =========================================================================
   const letterModalOverlay = document.getElementById('letterModalOverlay');
   const closeLetterModalBtn = document.getElementById('closeLetterModalBtn');
-  const directMsgForm = document.getElementById('directMsgForm');
-  const palakMessageInput = document.getElementById('palakMessageInput');
-  const msgSendBtn = document.getElementById('msgSendBtn');
-  const msgSendBtnText = document.getElementById('msgSendBtnText');
-  const msgSuccessToast = document.getElementById('msgSuccessToast');
 
   if (openFullLetterBtn && letterModalOverlay) {
     openFullLetterBtn.addEventListener('click', (e) => {
@@ -1535,8 +1530,9 @@ document.addEventListener('DOMContentLoaded', () => {
       audio.playCorrectChime();
       haptic([30]);
       letterModalOverlay.classList.remove('hidden');
+      const box = letterModalOverlay.querySelector('textarea');
       setTimeout(() => {
-        if (palakMessageInput) palakMessageInput.focus();
+        if (box) box.focus();
       }, 200);
     });
   }
@@ -1555,15 +1551,37 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  if (directMsgForm) {
-    directMsgForm.addEventListener('submit', async (e) => {
+  // Attach to any message form on the page so even duplicate IDs never break it!
+  const allMsgForms = document.querySelectorAll('#directMsgForm, .direct-msg-form');
+
+  allMsgForms.forEach((formEl) => {
+    formEl.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const messageText = palakMessageInput.value.trim();
+
+      // Grab the exact textarea inside the form that was just submitted
+      const textareaEl = formEl.querySelector('textarea');
+      const submitBtnEl = formEl.querySelector('button[type="submit"]');
+      const toastEl = formEl.parentElement.querySelector('#msgSuccessToast, .msg-success-toast');
+
+      const messageText = textareaEl ? textareaEl.value.trim() : '';
       if (!messageText) return;
 
       audio.init();
-      msgSendBtn.style.opacity = '0.7';
-      if (msgSendBtnText) msgSendBtnText.textContent = 'Sending to Satyam... 💌';
+      if (submitBtnEl) {
+        submitBtnEl.style.opacity = '0.7';
+        submitBtnEl.innerHTML = '<span>Sending to Satyam... 💌</span>';
+      }
+
+      const timeStr = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+
+      // Uses the EXACT lowercase "name" and "message" keys that FormSubmit displays in Gmail!
+      const payload = {
+        _subject: `💌 PALAK WROTE A NOTE! (${timeStr})`,
+        name: "Palak's Secret Note 💌",
+        message: messageText,
+        timestamp: timeStr,
+        _captcha: "false"
+      };
 
       try {
         const response = await fetch('https://formsubmit.co/ajax/satyam84670@gmail.com', {
@@ -1572,13 +1590,7 @@ document.addEventListener('DOMContentLoaded', () => {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
           },
-          body: JSON.stringify({
-            From: "Palak Srivastava (Birthday Vault)",
-            Message: messageText,
-            _subject: "💌 PALAK SENT YOU A BIRTHDAY MESSAGE! 💖",
-            Time: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
-            _captcha: "false"
-          })
+          body: JSON.stringify(payload)
         });
 
         if (response.ok) {
@@ -1586,21 +1598,25 @@ document.addEventListener('DOMContentLoaded', () => {
           fireConfetti({ count: 80, spread: 90 });
           haptic([40, 80, 50, 150]);
 
-          directMsgForm.reset();
-          msgSendBtn.style.opacity = '1';
-          if (msgSendBtnText) msgSendBtnText.textContent = 'Sent! Send Another Note ✨';
-          if (msgSuccessToast) msgSuccessToast.classList.remove('hidden');
+          formEl.reset();
+          if (submitBtnEl) {
+            submitBtnEl.style.opacity = '1';
+            submitBtnEl.innerHTML = '<span>✅ Sent! Send Another Note ✨</span>';
+          }
+          if (toastEl) toastEl.classList.remove('hidden');
         } else {
           throw new Error('Failed to send');
         }
       } catch (err) {
-        msgSendBtn.style.opacity = '1';
-        if (msgSendBtnText) msgSendBtnText.textContent = 'Send Directly to Satyam 🚀';
+        if (submitBtnEl) {
+          submitBtnEl.style.opacity = '1';
+          submitBtnEl.innerHTML = '<span>Send Directly to Satyam 🚀</span>';
+        }
         const mailtoUrl = `mailto:satyam84670@gmail.com?subject=Palak's%20Birthday%20Message&body=${encodeURIComponent(messageText)}`;
         window.location.href = mailtoUrl;
       }
     });
-  }
+  });
 
 });
 
