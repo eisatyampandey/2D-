@@ -5,6 +5,8 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
+
+  
   // =========================================================================
   // 1. SOUND SYNTHESIZER (WEB AUDIO API - ZERO EXTERNAL AUDIO DEPENDENCIES)
   // =========================================================================
@@ -1444,23 +1446,19 @@ document.addEventListener('DOMContentLoaded', () => {
       isVaultCardFlipped = toNote;
     }
 
-    if (isVaultCardFlipped) {
+   if (isVaultCardFlipped) {
       vault3dCard.classList.add('is-flipped');
       audio.playCorrectChime();
       haptic([35, 45]);
-      if (toggleNoteBtnText) toggleNoteBtnText.textContent = '🎂 Back to Cake View ↺';
-      if (toggleNoteBtnIcon) toggleNoteBtnIcon.textContent = '↺';
       if (noteCardBody) noteCardBody.scrollTop = 0;
     } else {
       vault3dCard.classList.remove('is-flipped');
       audio.playCorrectChime();
       haptic([35, 45]);
-      if (toggleNoteBtnText) toggleNoteBtnText.textContent = '💌 Read My Note ✨';
-      if (toggleNoteBtnIcon) toggleNoteBtnIcon.textContent = '➔';
     }
   }
 
-  // 1. In-Frame Glass Button on Front Face ("Read My Note ✨")
+  // 1ST BUTTON (Inside Card: "💌 Read My Note ✨ [🔄 3D Flip]"): Flips the 3D Card
   if (flipToNoteInnerBtn) {
     flipToNoteInnerBtn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -1468,7 +1466,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 2. In-Frame Glass Button on Back Face ("↺ Back to Cake 🎂")
+  // Back Face "↺ Back to Cake 🎂" Button
   if (flipBackInnerBtn) {
     flipBackInnerBtn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -1476,7 +1474,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 3. Mini ↺ Close Button in Card Header
+  // Mini ↺ Close Button in Card Header
   if (flipBackMiniBtn) {
     flipBackMiniBtn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -1484,14 +1482,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 4. Primary Pill Action Button below Card ("💌 Read My Note ✨" / "🎂 Back to Cake View ↺")
-  if (openFullLetterBtn) {
-    openFullLetterBtn.addEventListener('click', () => {
-      flipVaultCard();
-    });
-  }
-
-  // 5. Blast Confetti Button on Back Face
+  // Blast Confetti Button on Back Face
   if (blastConfettiInnerBtn) {
     blastConfettiInnerBtn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -1502,7 +1493,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 6. Touch Swipe on 3D Card (horizontal swipe gesture to flip between front & back)
+  // Touch Swipe on 3D Card (horizontal swipe gesture to flip between front & back)
   if (vault3dCard) {
     let cardTouchStartX = 0;
     let cardTouchStartY = 0;
@@ -1516,23 +1507,39 @@ document.addEventListener('DOMContentLoaded', () => {
       const diffX = e.changedTouches[0].screenX - cardTouchStartX;
       const diffY = e.changedTouches[0].screenY - cardTouchStartY;
 
-      // Trigger only if horizontal swipe is clearly intentional
       if (Math.abs(diffX) > 40 && Math.abs(diffX) > Math.abs(diffY) * 1.4) {
         if (diffX < 0 && !isVaultCardFlipped) {
-          // Swipe left -> flip to note
           flipVaultCard(true);
         } else if (diffX > 0 && isVaultCardFlipped) {
-          // Swipe right -> flip to cake
           flipVaultCard(false);
         }
       }
     }, { passive: true });
   }
 
-  // Optional Fallback Modal Listeners (if modal is opened)
+  // =========================================================================
+  // 2ND BUTTON (MIDDLE): OPENS BEAUTIFUL WRITING PAD & SENDS TO GMAIL
+  // =========================================================================
   const letterModalOverlay = document.getElementById('letterModalOverlay');
   const closeLetterModalBtn = document.getElementById('closeLetterModalBtn');
-  const modalCelebrateBtn = document.getElementById('modalCelebrateBtn');
+  const directMsgForm = document.getElementById('directMsgForm');
+  const palakMessageInput = document.getElementById('palakMessageInput');
+  const msgSendBtn = document.getElementById('msgSendBtn');
+  const msgSendBtnText = document.getElementById('msgSendBtnText');
+  const msgSuccessToast = document.getElementById('msgSuccessToast');
+
+  if (openFullLetterBtn && letterModalOverlay) {
+    openFullLetterBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      audio.init();
+      audio.playCorrectChime();
+      haptic([30]);
+      letterModalOverlay.classList.remove('hidden');
+      setTimeout(() => {
+        if (palakMessageInput) palakMessageInput.focus();
+      }, 200);
+    });
+  }
 
   if (closeLetterModalBtn && letterModalOverlay) {
     closeLetterModalBtn.addEventListener('click', () => {
@@ -1548,12 +1555,50 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  if (modalCelebrateBtn) {
-    modalCelebrateBtn.addEventListener('click', () => {
+  if (directMsgForm) {
+    directMsgForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const messageText = palakMessageInput.value.trim();
+      if (!messageText) return;
+
       audio.init();
-      audio.playFanfare();
-      fireConfetti({ count: 90, spread: 100 });
-      haptic([40, 60, 40, 80]);
+      msgSendBtn.style.opacity = '0.7';
+      if (msgSendBtnText) msgSendBtnText.textContent = 'Sending to Satyam... 💌';
+
+      try {
+        const response = await fetch('https://formsubmit.co/ajax/satyam84670@gmail.com', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+            From: "Palak Srivastava (Birthday Vault)",
+            Message: messageText,
+            _subject: "💌 PALAK SENT YOU A BIRTHDAY MESSAGE! 💖",
+            Time: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
+            _captcha: "false"
+          })
+        });
+
+        if (response.ok) {
+          audio.playFanfare();
+          fireConfetti({ count: 80, spread: 90 });
+          haptic([40, 80, 50, 150]);
+
+          directMsgForm.reset();
+          msgSendBtn.style.opacity = '1';
+          if (msgSendBtnText) msgSendBtnText.textContent = 'Sent! Send Another Note ✨';
+          if (msgSuccessToast) msgSuccessToast.classList.remove('hidden');
+        } else {
+          throw new Error('Failed to send');
+        }
+      } catch (err) {
+        msgSendBtn.style.opacity = '1';
+        if (msgSendBtnText) msgSendBtnText.textContent = 'Send Directly to Satyam 🚀';
+        const mailtoUrl = `mailto:satyam84670@gmail.com?subject=Palak's%20Birthday%20Message&body=${encodeURIComponent(messageText)}`;
+        window.location.href = mailtoUrl;
+      }
     });
   }
 

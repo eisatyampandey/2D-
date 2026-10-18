@@ -494,7 +494,7 @@
 
             <!-- Greeting -->
             <h2 class="note-card-title">
-              Hey <span class="letter-palak-name">Palak</span>,
+              Hey <span class="letter-palak-name">Palak</span> ,
             </h2>
 
             <!-- Large Readable Note Body -->
@@ -543,15 +543,15 @@
         </div>
       </div>
 
-      <!-- Clean Birthday Action CTAs -->
+    <!-- Clean Birthday Action CTAs -->
       <div class="vault-actions-group">
-        <!-- Read Note / Flip Primary Button -->
+        <!-- 2ND BUTTON (MIDDLE): Opens Beautiful Writing Pad to Send Message to Satyam -->
         <button class="primary-pill-btn letter-cta-btn" id="openFullLetterBtn">
-          <span id="toggleNoteBtnText">💌 Read My Note ✨</span>
+          <span id="toggleNoteBtnText">✍️ Write a Secret Note to Satyam 💌</span>
           <span class="btn-arrow" id="toggleNoteBtnIcon">➔</span>
         </button>
 
-        <!-- Blow & Make Wish Button -->
+        <!-- 3RD BUTTON (BOTTOM): Blow & Make Wish Button (Works Exactly As Before!) -->
         <button class="primary-pill-btn grand-finale-btn" id="grandWishBtn">
           <span>🎂 Blow Up Cake &amp; Make a Wish</span>
           <span class="btn-arrow">✨</span>
@@ -564,58 +564,48 @@
     </section>
 
     <!-- ========================================================================= -->
-    <!-- MODAL: READABLE, AUTHENTIC BIRTHDAY LETTER OVERLAY                         -->
+    <!-- MODAL (2ND BUTTON POPUP): BEAUTIFUL WRITING PAD -> SENDS TO SATYAM'S GMAIL -->
     <!-- ========================================================================= -->
     <div class="letter-modal-overlay hidden" id="letterModalOverlay">
-      <div class="letter-modal-card">
-        <button class="modal-close-btn" id="closeLetterModalBtn">✕</button>
+      <div class="letter-modal-card writing-pad-card">
+        <button type="button" class="modal-close-btn" id="closeLetterModalBtn">✕</button>
 
         <div class="envelope-top-bar">
-          <span class="envelope-stamp">FROM MY HEART TO YOURS 💌</span>
-          <span class="envelope-confidential">100% REAL</span>
+          <span class="envelope-stamp">DIRECT TO SATYAM'S GMAIL 💌</span>
+          <span class="envelope-confidential">NO LOGIN NEEDED</span>
         </div>
 
         <h2 class="modal-letter-title">
-          Hey <span class="letter-palak-name">Palak</span>,
+          Dear <span class="letter-palak-name">Satyam</span>,
         </h2>
+        <p class="writing-pad-subtext">
+          Write whatever is in your heart—your thoughts, wishes, or reply. It goes straight to Satyam! ✨
+        </p>
 
-        <div class="modal-letter-body">
-          <p>
-            One day, I hope you’ll truly understand my feelings and realize how genuine and real my heart has always
-            been for you. Everything I’ve ever done comes from a place of pure love and deep respect—for your
-            dedication, your hard work, and everything that makes you who you are—without even a single hope of getting
-            anything back in return.
-          </p>
+        <form class="direct-msg-form" id="directMsgForm" action="https://formsubmit.co/ajax/satyam84670@gmail.com" method="POST">
+          <input type="hidden" name="_subject" value="💌 New Birthday Message from Palak!">
+          <input type="hidden" name="_captcha" value="false">
 
-          <div class="letter-wishes-card">
-            <div class="wishes-heading">✦ Just me &amp; my honest thoughts:</div>
-            <ul class="letter-wishes-list">
-              <li>💭 I know I have a <strong>-20% chance</strong> of you accepting my proposal, yet I did it over and
-                over again... so I thought, <em>why not this too?</em> It’s just me and my thoughts that always go
-                around yours.</li>
-              <li>🌟 I will always say this: I have always respected you, looked up to you, and trusted your decisions
-                and beliefs completely.</li>
-            </ul>
+          <div class="stationery-paper-box">
+            <textarea
+              name="message"
+              id="palakMessageInput"
+              class="stationery-textarea"
+              placeholder="Tap here to write your message to Satyam... 💖"
+              required
+              rows="4"></textarea>
+            <div class="stationery-signoff">— From Palak 🌸</div>
           </div>
 
-          <p>
-            Why did I make this website? Honestly, I don’t know—my inner feelings just said <em>"make this for
-              her,"</em> so that’s why I made it.
-          </p>
+          <button type="submit" class="primary-pill-btn msg-send-btn" id="msgSendBtn">
+            <span id="msgSendBtnText">Send Directly to Satyam 🚀</span>
+            <span class="btn-arrow">💌</span>
+          </button>
+        </form>
 
-          <p class="letter-closing">
-            I truly hope you stay happy always and get everything you have ever wanted in your life. Happy Birthday! 🎂✨
-          </p>
-
-          <div class="letter-signature-block">
-            <div class="signature-line">Always with you,</div>
-            <div class="letter-signature">— Satyam Pandey 💖</div>
-          </div>
+        <div class="msg-success-toast hidden" id="msgSuccessToast">
+          🎉 Sent! Your secret note was delivered straight to Satyam's Gmail! 💖✨
         </div>
-
-        <button class="primary-pill-btn" id="modalCelebrateBtn">
-          <span>Blast Birthday Confetti! 🎊</span>
-        </button>
       </div>
     </div>
 
