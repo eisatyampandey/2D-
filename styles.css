@@ -2691,3 +2691,31 @@ textarea,
 .msg-success-toast.hidden {
   display: none;
 }
+
+/* ==========================================================================
+   STRICT LIGHT MODE LOCK (PREVENTS ANDROID DARK MODE FROM INVERTING COLORS)
+   ========================================================================== */
+:root,
+html,
+body,
+.mobile-app-shell,
+.screen-view,
+.card-face,
+.letter-modal-card,
+input,
+textarea,
+button {
+  color-scheme: only light !important;
+  forced-color-adjust: none !important;
+  -webkit-forced-color-adjust: none !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root,
+  html,
+  body {
+    color-scheme: only light !important;
+    background: linear-gradient(180deg, #FFF5F7 0%, #FFFFFF 45%, #FEFCE8 100%) !important;
+    color: #232328 !important;
+  }
+}
