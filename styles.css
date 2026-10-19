@@ -2719,3 +2719,229 @@ button {
     color: #232328 !important;
   }
 }
+
+/* ==========================================================================
+   UNIVERSAL ANDROID (SMALL & BIG PHONES) + TABLET COMPATIBILITY ENGINE
+   Ensures 100% visibility on 320px mini phones, 412px+ Androids, & Tablets
+   ========================================================================== */
+
+/* 1. Stop the floating BGM button from overlapping top-right badges on any screen */
+.top-nav-bar {
+  padding-right: 84px !important;
+  margin-bottom: clamp(6px, 1.2vh, 14px) !important;
+}
+
+/* 2. Small / Compact Android Phones (Width <= 380px or Height <= 720px) */
+@media (max-width: 380px), (max-height: 720px) {
+  .screen-view {
+    padding: calc(8px + var(--safe-top)) 12px calc(66px + var(--safe-bottom)) 12px !important;
+  }
+
+  .main-title {
+    font-size: clamp(20px, 3vh, 25px) !important;
+  }
+
+  .handwritten-accent {
+    font-size: clamp(28px, 4.2vh, 36px) !important;
+  }
+
+  /* Override the old 4/5 aspect-ratio rule so Evolution photo never pushes buttons off-screen */
+  #screen-evolution .evolution-photo-frame,
+  .evolution-photo-frame {
+    aspect-ratio: auto !important;
+    height: clamp(130px, 21vh, 185px) !important;
+    max-height: 22vh !important;
+  }
+
+  .stage-tabs-row {
+    gap: 5px !important;
+    margin-bottom: 6px !important;
+  }
+
+  .stage-tab {
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+  }
+
+  .option-card {
+    padding: 8px 10px !important;
+  }
+
+  .primary-pill-btn {
+    height: 44px !important;
+    font-size: 14px !important;
+  }
+
+  .trust-badges-row {
+    margin-top: 8px !important;
+  }
+}
+
+/* 3. Safety Fallback for Ultra-Short Screens or Landscape Orientation (Height <= 620px) */
+@media (max-height: 620px) {
+  .screen-view {
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* 4. Tablet & iPad Optimization (768px to 1366px) - Centered 3D App Frame */
+@media (min-width: 600px) {
+  body {
+    background: radial-gradient(circle at center, #FFF0F5 0%, #F3E8EE 100%) !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mobile-app-shell {
+    max-width: 520px !important;
+    height: min(94dvh, 920px) !important;
+    max-height: min(94dvh, 920px) !important;
+    border-radius: 34px;
+    border: 2px solid rgba(255, 182, 193, 0.55);
+    box-shadow: 0 25px 70px rgba(236, 72, 153, 0.18), 0 8px 24px rgba(35, 35, 40, 0.08) !important;
+  }
+
+  .screen-view {
+    height: 100% !important;
+    max-height: 100% !important;
+    padding: 20px 26px 84px 26px !important;
+  }
+
+  .bottom-nav-bar {
+    max-width: 520px !important;
+    bottom: max(0px, calc((100dvh - min(94dvh, 920px)) / 2));
+    border-bottom-left-radius: 32px;
+    border-bottom-right-radius: 32px;
+  }
+
+  .music-toggle-btn {
+    top: calc(max(0px, (100dvh - min(94dvh, 920px)) / 2) + 20px) !important;
+    right: calc(50% - 260px + 22px) !important;
+  }
+
+  /* Give photos extra breathing room on big Tablet screens */
+  #screen-evolution .evolution-photo-frame,
+  .evolution-photo-frame {
+    height: clamp(220px, 28vh, 300px) !important;
+  }
+
+  .doraemon-cake-frame {
+    width: clamp(170px, 24vh, 230px) !important;
+    height: clamp(170px, 24vh, 230px) !important;
+  }
+}
+
+/* ==========================================================================
+   UNIVERSAL ANDROID (SMALL & BIG PHONES) + TABLET COMPATIBILITY ENGINE
+   Ensures 100% visibility on 320px mini phones, 412px+ Androids, & Tablets
+   ========================================================================== */
+
+/* 1. Stop the floating BGM button from overlapping top-right badges on any screen */
+.top-nav-bar {
+  padding-right: 84px !important;
+  margin-bottom: clamp(6px, 1.2vh, 14px) !important;
+}
+
+/* 2. Small / Compact Android Phones (Width <= 380px or Height <= 720px) */
+@media (max-width: 380px), (max-height: 720px) {
+  .screen-view {
+    padding: calc(8px + var(--safe-top)) 12px calc(66px + var(--safe-bottom)) 12px !important;
+  }
+
+  .main-title {
+    font-size: clamp(20px, 3vh, 25px) !important;
+  }
+
+  .handwritten-accent {
+    font-size: clamp(28px, 4.2vh, 36px) !important;
+  }
+
+  /* Override the old 4/5 aspect-ratio rule so Evolution photo never pushes buttons off-screen */
+  #screen-evolution .evolution-photo-frame,
+  .evolution-photo-frame {
+    aspect-ratio: auto !important;
+    height: clamp(130px, 21vh, 185px) !important;
+    max-height: 22vh !important;
+  }
+
+  .stage-tabs-row {
+    gap: 5px !important;
+    margin-bottom: 6px !important;
+  }
+
+  .stage-tab {
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+  }
+
+  .option-card {
+    padding: 8px 10px !important;
+  }
+
+  .primary-pill-btn {
+    height: 44px !important;
+    font-size: 14px !important;
+  }
+
+  .trust-badges-row {
+    margin-top: 8px !important;
+  }
+}
+
+/* 3. Safety Fallback for Ultra-Short Screens or Landscape Orientation (Height <= 620px) */
+@media (max-height: 620px) {
+  .screen-view {
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* 4. Tablet & iPad Optimization (768px to 1366px) - Centered 3D App Frame */
+@media (min-width: 600px) {
+  body {
+    background: radial-gradient(circle at center, #FFF0F5 0%, #F3E8EE 100%) !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mobile-app-shell {
+    max-width: 520px !important;
+    height: min(94dvh, 920px) !important;
+    max-height: min(94dvh, 920px) !important;
+    border-radius: 34px;
+    border: 2px solid rgba(255, 182, 193, 0.55);
+    box-shadow: 0 25px 70px rgba(236, 72, 153, 0.18), 0 8px 24px rgba(35, 35, 40, 0.08) !important;
+  }
+
+  .screen-view {
+    height: 100% !important;
+    max-height: 100% !important;
+    padding: 20px 26px 84px 26px !important;
+  }
+
+  .bottom-nav-bar {
+    max-width: 520px !important;
+    bottom: max(0px, calc((100dvh - min(94dvh, 920px)) / 2));
+    border-bottom-left-radius: 32px;
+    border-bottom-right-radius: 32px;
+  }
+
+  .music-toggle-btn {
+    top: calc(max(0px, (100dvh - min(94dvh, 920px)) / 2) + 20px) !important;
+    right: calc(50% - 260px + 22px) !important;
+  }
+
+  /* Give photos extra breathing room on big Tablet screens */
+  #screen-evolution .evolution-photo-frame,
+  .evolution-photo-frame {
+    height: clamp(220px, 28vh, 300px) !important;
+  }
+
+  .doraemon-cake-frame {
+    width: clamp(170px, 24vh, 230px) !important;
+    height: clamp(170px, 24vh, 230px) !important;
+  }
+}
