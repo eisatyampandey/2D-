@@ -2945,3 +2945,110 @@ button {
     height: clamp(170px, 24vh, 230px) !important;
   }
 }
+
+/* ==========================================================================
+   FINAL TABLET, LAPTOP & MOBILE ZERO-OVERLAP FIX FOR VAULT & EVOLUTION
+   Automatically scales the Cake & Photo to the exact available card space!
+   ========================================================================== */
+
+/* 1. Make Card Front a strict non-overlapping vertical stack on ALL devices */
+#screen-vault .card-face-front {
+  display: grid !important;
+  grid-template-rows: auto minmax(0, 1fr) auto !important;
+  gap: 6px !important;
+  padding: clamp(8px, 1.4vh, 14px) !important;
+  overflow: hidden !important;
+}
+
+/* Row 1: Daya Sir Banner (Protected at the top, never overlapped) */
+#screen-vault .card-face-front .vault-cid-banner {
+  margin: 0 !important;
+  padding: 6px 10px !important;
+  position: relative !important;
+  z-index: 5 !important;
+}
+
+/* Row 2: Middle Cake Area (Strictly contained between Banner & Bottom Button) */
+#screen-vault .card-face-front .doraemon-cake-card {
+  height: 100% !important;
+  min-height: 0 !important;
+  max-height: 100% !important;
+  margin: 0 !important;
+  padding: 2px 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 4px !important;
+  overflow: hidden !important;
+}
+
+#screen-vault .doraemon-cake-stage {
+  flex: 1 1 0% !important;
+  min-height: 0 !important;
+  width: 100% !important;
+  margin: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px !important;
+  overflow: hidden !important;
+}
+
+/* Magic Auto-Scaling Cake Box: Shrinks or grows to fit exact remaining height! */
+#screen-vault .doraemon-cake-frame,
+@media (min-width: 600px) { #screen-vault .doraemon-cake-frame } {
+  flex: 1 1 0% !important;
+  min-height: 0 !important;
+  height: auto !important;
+  width: auto !important;
+  max-height: 155px !important;
+  max-width: 155px !important;
+  aspect-ratio: 1 / 1 !important;
+  margin: 0 auto !important;
+}
+
+/* Override the old min-width: 600px tablet rule specifically */
+@media (min-width: 600px) {
+  #screen-vault .doraemon-cake-frame {
+    width: auto !important;
+    height: auto !important;
+    flex: 1 1 0% !important;
+    min-height: 0 !important;
+    max-height: clamp(95px, 16dvh, 160px) !important;
+    max-width: clamp(95px, 16dvh, 160px) !important;
+    aspect-ratio: 1 / 1 !important;
+  }
+
+  #screen-evolution .evolution-photo-frame,
+  .evolution-photo-frame {
+    height: clamp(140px, 21dvh, 210px) !important;
+    max-height: 22dvh !important;
+  }
+}
+
+/* Keep the two badges under the cake neat and non-overlapping */
+#screen-vault .cake-blow-badge {
+  flex-shrink: 0 !important;
+  margin: 0 !important;
+  padding: 3px 10px !important;
+  font-size: 9.5px !important;
+}
+
+#screen-vault .cake-tap-badge {
+  flex-shrink: 0 !important;
+  margin: 0 !important;
+  padding: 5px 12px !important;
+  font-size: 11px !important;
+  line-height: 1.25 !important;
+  text-align: center !important;
+}
+
+/* Row 3: "Read My Note (3D Flip)" Bar (Protected at the bottom of the card) */
+#screen-vault .card-face-front .card-glass-bottom-bar {
+  margin: 0 !important;
+  padding-top: 6px !important;
+  position: relative !important;
+  z-index: 5 !important;
+}
