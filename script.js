@@ -986,7 +986,7 @@ document.addEventListener('DOMContentLoaded', () => {
       quote: "\"A joyful 23-year-old Palak with Doraemon, CID team, birthday cake & stylish goggles! 🎂🕶️👑🕵️‍♂️\"",
       title: "4. Palak @ 23: CID & Doraemon Party! 👑🎂",
       era: "Age 23 // Undisputed Birthday Queen",
-      desc: "A joyful 23-year-old skinny anime girl radiating love and happiness, holding her birthday cake with stylish party goggles, surrounded by Doraemon and the whole celebrating CID Inspector team! 💖🕶️🍰🕵️‍♂️",
+      desc: "A joyful 23-year-old beautiful girl radiating love and happiness, holding her birthday cake with stylish party goggles, surrounded by Doraemon and the whole celebrating CID Inspector team! 💖🕶️🍰🕵️‍♂️",
       stats: [
         { label: "AGE", value: "23 & Iconic 👑" },
         { label: "HAPPINESS & LOVE", value: "100% 💖" },
