@@ -2624,3 +2624,23 @@ textarea,
     -webkit-overflow-scrolling: touch;
   }
 }
+/* Make Doraemon Holding Cake much bigger while staying locked inside the safe middle row */
+#screen-vault .doraemon-cake-frame,
+.doraemon-cake-frame {
+  flex: 1 1 0% !important;
+  min-height: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  max-height: clamp(135px, 24dvh, 235px) !important;
+  max-width: clamp(135px, 24dvh, 235px) !important;
+  aspect-ratio: 1 / 1 !important;
+  margin: 0 auto !important;
+  padding: 4px !important;
+}
+
+#screen-vault .doraemon-holding-cake-img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  transform: scale(1.06); /* Slightly zooms Doraemon inside his white frame so he looks fuller */
+}

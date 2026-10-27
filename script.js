@@ -1081,7 +1081,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (photoFrame && photoFrame.parentNode) {
       // Show the full square artwork clearly without cropping out the cake or Doraemon
-      photoFrame.style.aspectRatio = '1 / 1';
+      photoFrame.style.aspectRatio = 'auto';
 
       if (peekingBanner && peekingBanner.parentNode === photoFrame) {
         photoFrame.insertAdjacentElement('afterend', peekingBanner);
