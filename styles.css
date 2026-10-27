@@ -7,6 +7,8 @@
 
 /* --- CSS Variables & Color Palette --- */
 :root {
+  color-scheme: only light !important;
+
   /* Requested Color Scheme */
   --c-light-black: #232328;
   --c-light-black-soft: #32323A;
@@ -49,6 +51,32 @@
   
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* --- Strict Light Mode Lock (Prevents Android Dark Mode Inversion) --- */
+:root,
+html,
+body,
+.mobile-app-shell,
+.screen-view,
+.card-face,
+.letter-modal-card,
+input,
+textarea,
+button {
+  color-scheme: only light !important;
+  forced-color-adjust: none !important;
+  -webkit-forced-color-adjust: none !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root,
+  html,
+  body {
+    color-scheme: only light !important;
+    background: linear-gradient(180deg, #FFF5F7 0%, #FFFFFF 45%, #FEFCE8 100%) !important;
+    color: #232328 !important;
+  }
 }
 
 /* --- Global Reset & Mobile Viewport Lock for Android Chrome --- */
@@ -289,22 +317,6 @@ textarea,
   overscroll-behavior: none;
 }
 
-@media (min-width: 481px) {
-  body {
-    background: #F9F6F7;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .mobile-app-shell {
-    box-shadow: 0 0 50px rgba(236, 72, 153, 0.12), 0 0 1px rgba(0, 0, 0, 0.12);
-    background: linear-gradient(180deg, #FFF5F7 0%, #FFFFFF 45%, #FEFCE8 100%);
-    border-left: 1px solid rgba(255, 182, 193, 0.35);
-    border-right: 1px solid rgba(255, 182, 193, 0.35);
-  }
-}
-
 /* --- Screen Views Container (Locked to Single Screen Viewport) --- */
 .screen-view {
   display: none;
@@ -317,22 +329,67 @@ textarea,
   padding: calc(10px + var(--safe-top)) 16px calc(72px + var(--safe-bottom)) 16px;
   overflow: hidden;
   overscroll-behavior: none;
-  animation: screenFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .screen-view.active {
   display: flex;
+  animation: smoothPageTransition 0.48s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  will-change: transform, opacity;
 }
 
 @keyframes screenFadeIn {
-  from {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes smoothPageTransition {
+  0% {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(18px) scale(0.97);
+    filter: blur(4px);
   }
-  to {
+  100% {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
+    filter: blur(0px);
   }
+}
+
+/* Special Grand Finale Entrance for the Last Page (#screen-vault) */
+#screen-vault.screen-view.active {
+  animation: grandVaultEntrance 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes grandVaultEntrance {
+  0% {
+    opacity: 0;
+    transform: perspective(1000px) translateZ(-80px) rotateX(10deg) scale(0.9);
+    filter: brightness(1.3) blur(6px);
+  }
+  60% {
+    opacity: 1;
+    transform: perspective(1000px) translateZ(12px) rotateX(-2deg) scale(1.01);
+    filter: brightness(1.05) blur(0px);
+  }
+  100% {
+    opacity: 1;
+    transform: perspective(1000px) translateZ(0) rotateX(0deg) scale(1);
+    filter: brightness(1) blur(0px);
+  }
+}
+
+#screen-vault.active .vault-header {
+  animation: smoothPageTransition 0.55s 0.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+#screen-vault.active .vault-cid-banner,
+#screen-vault.active .vault-flip-stage,
+#screen-vault.active .doraemon-cake-card {
+  animation: smoothPageTransition 0.65s 0.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+#screen-vault.active .vault-actions-group {
+  animation: smoothPageTransition 0.65s 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 /* --- Top Navigation Header --- */
@@ -340,8 +397,10 @@ textarea,
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 18px;
+  padding-right: 84px;
+  margin-bottom: clamp(4px, 1dvh, 10px);
   width: 100%;
+  flex-shrink: 0;
 }
 
 .status-pill {
@@ -466,7 +525,7 @@ textarea,
 
 .main-title {
   font-family: var(--font-serif);
-  font-size: clamp(23px, 3.4vh, 32px);
+  font-size: clamp(22px, 3.2vh, 30px);
   font-weight: 700;
   line-height: 1.2;
   color: var(--c-light-black);
@@ -477,7 +536,7 @@ textarea,
 .handwritten-accent {
   font-family: var(--font-letter);
   font-weight: 700;
-  font-size: clamp(34px, 5vh, 46px);
+  font-size: clamp(32px, 4.6vh, 44px);
   color: var(--c-baby-pink-vibrant);
   display: inline-block;
   transform: rotate(-2deg);
@@ -723,12 +782,12 @@ textarea,
 /* --- Primary Action Buttons --- */
 .primary-pill-btn {
   width: 100%;
-  height: 54px;
+  height: 50px;
   border-radius: var(--radius-full);
   background: var(--c-light-black);
   color: #FFFFFF;
   font-family: var(--font-sans);
-  font-size: 15.5px;
+  font-size: 15px;
   font-weight: 700;
   border: none;
   display: flex;
@@ -761,7 +820,7 @@ textarea,
   align-items: center;
   justify-content: center;
   gap: 12px;
-  margin-top: 18px;
+  margin-top: 12px;
 }
 
 .badge-mini {
@@ -797,7 +856,7 @@ textarea,
 .progress-labels {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .subtext-xs {
@@ -847,7 +906,6 @@ textarea,
   100% { transform: translateY(-5px) rotate(1.5deg); }
 }
 
-/* Happy Reaction Animation */
 .big-doraemon-character.happy {
   animation: celebrateHappy 0.65s ease-in-out infinite alternate;
   filter: drop-shadow(0 10px 20px rgba(245, 158, 11, 0.35));
@@ -858,7 +916,6 @@ textarea,
   100% { transform: translateY(-10px) scale(1.15) rotate(3deg); }
 }
 
-/* Sad / Low Reaction Animation */
 .big-doraemon-character.sad {
   animation: sadDroop 0.5s ease;
   filter: drop-shadow(0 4px 10px rgba(239, 68, 68, 0.25));
@@ -887,7 +944,6 @@ textarea,
   transition: transform 0.2s;
 }
 
-/* Live Character Speech Bubble */
 .doraemon-live-bubble {
   flex: 1;
   background: var(--c-white);
@@ -898,7 +954,6 @@ textarea,
   position: relative;
 }
 
-/* Bubble Arrow */
 .doraemon-live-bubble::before {
   content: '';
   position: absolute;
@@ -934,7 +989,7 @@ textarea,
   background: var(--c-white);
   border: 1.5px solid var(--color-border);
   border-radius: var(--radius-card);
-  padding: clamp(10px, 1.5vh, 16px) clamp(10px, 1.5vh, 16px);
+  padding: clamp(10px, 1.5vh, 16px);
   box-shadow: var(--shadow-card);
   margin-bottom: clamp(6px, 1vh, 12px);
   position: relative;
@@ -996,7 +1051,7 @@ textarea,
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 14px;
+  padding: 10px 12px;
   background: #FFFDFE;
   border: 1.5px solid var(--color-border);
   border-radius: 16px;
@@ -1032,8 +1087,8 @@ textarea,
 
 .option-text-content {
   flex: 1;
-  font-size: 13.5px;
-  line-height: 1.4;
+  font-size: 13px;
+  line-height: 1.38;
   font-weight: 600;
   color: var(--c-light-black);
 }
@@ -1119,14 +1174,14 @@ textarea,
 
 /* Feedback Box */
 .feedback-box {
-  margin-top: 14px;
-  padding: 12px 14px;
+  margin-top: 8px;
+  padding: 10px 12px;
   border-radius: 12px;
   display: flex;
   align-items: flex-start;
-  gap: 10px;
-  font-size: 13px;
-  line-height: 1.4;
+  gap: 8px;
+  font-size: 12.5px;
+  line-height: 1.35;
   animation: screenFadeIn 0.25s ease;
 }
 
@@ -1315,39 +1370,46 @@ textarea,
 }
 
 /* ==========================================================================
-   ACT 2: PALAK'S EVOLUTION (HALL OF FAME)
+   ACT 2: PALAK'S EVOLUTION (HALL OF FAME - ALL 4 PHOTOS 100% UNCROPPED)
    ========================================================================== */
 .evolution-page-title {
   text-align: center;
-  margin-bottom: 14px;
+  margin-bottom: clamp(4px, 0.8dvh, 8px);
+  flex-shrink: 0;
+}
+
+.evolution-page-title .main-title {
+  font-size: clamp(20px, 2.8dvh, 26px);
+  margin-bottom: 0;
+}
+
+.evolution-page-title .handwritten-accent {
+  font-size: clamp(28px, 3.8dvh, 36px);
 }
 
 .evolution-sub-badge {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  color: var(--c-baby-pink-dark);
-  margin-top: 3px;
+  display: none;
 }
 
+/* 4 Stage Tabs in 1 Sleek Single Row on All Devices */
 .stage-tabs-row {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
-  margin-bottom: 14px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+  margin-bottom: clamp(6px, 1dvh, 10px);
   width: 100%;
+  flex-shrink: 0;
 }
 
 .stage-tab {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 9px 6px;
+  padding: 6px 3px;
   background: rgba(255, 255, 255, 0.94);
   border: 1.5px solid var(--color-border);
-  border-radius: 12px;
-  font-size: 12px;
+  border-radius: 10px;
+  font-size: clamp(10px, 1.3dvh, 11.5px);
   font-weight: 700;
   color: var(--text-muted);
   cursor: pointer;
@@ -1369,7 +1431,7 @@ textarea,
   min-height: 0;
   display: flex;
   flex-direction: column;
-  margin-bottom: clamp(6px, 1vh, 12px);
+  margin-bottom: clamp(4px, 0.8dvh, 8px);
 }
 
 .evolution-card {
@@ -1382,46 +1444,60 @@ textarea,
   min-height: 0;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
 }
 
+/* Auto-Scaling Photo Frame: Takes Remaining Space While Protecting Text & Stats Below */
+#screen-evolution .evolution-photo-frame,
 .evolution-photo-frame {
   position: relative;
-  width: 100%;
-  height: clamp(145px, 23vh, 210px);
-  background: linear-gradient(180deg, #FFF0F3 0%, #FFFFFF 100%);
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
+  flex: 1 1 0% !important;
+  min-height: 120px !important;
+  height: auto !important;
+  width: 100% !important;
+  aspect-ratio: auto !important;
+  background: radial-gradient(circle, #FFF0F5 0%, #FFFDF9 100%) !important;
+  padding: 6px 12px !important;
+  overflow: hidden !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-bottom: 1px solid var(--color-border) !important;
 }
 
+/* Shows 100% of All 4 Square Evolution Pictures with ZERO Cropping! */
+#screen-evolution .evolution-photo,
 .evolution-photo {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
+  width: auto !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  aspect-ratio: 1 / 1 !important;
+  object-fit: contain !important;
+  object-position: center center !important;
+  border-radius: 14px !important;
+  box-shadow: 0 5px 16px rgba(236, 72, 153, 0.18) !important;
   display: block;
   transition: opacity 0.3s ease;
 }
 
 .photo-overlay-top {
   position: absolute;
-  top: 12px;
+  top: 10px;
   left: 12px;
   right: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   z-index: 5;
+  pointer-events: none;
 }
 
 .photo-badge {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 9.5px;
   font-weight: 700;
   letter-spacing: 0.5px;
-  padding: 4px 10px;
+  padding: 3px 8px;
   border-radius: 6px;
   backdrop-filter: blur(8px);
 }
@@ -1436,56 +1512,18 @@ textarea,
   color: #FFFFFF;
 }
 
-/* Peeking Avatar Banner */
-.peeking-avatar-banner {
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  right: 10px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  padding: 8px 12px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
-  z-index: 5;
-}
-
-.peeking-doraemon-img {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: var(--c-yellow-soft);
-  border: 1.5px solid var(--c-yellow-deep);
-  flex-shrink: 0;
-}
-
-.peeking-quote {
-  font-size: 12px;
-  line-height: 1.35;
-  color: var(--c-light-black);
-}
-
-.peeking-name {
-  font-weight: 700;
-  color: var(--c-yellow-amber);
-}
-
+/* Stage 4 Squad Badges Below Photo */
+#screen-evolution .stage4-squad-overlay,
 .stage4-squad-overlay {
-  position: absolute;
-  top: 48px;
-  left: 10px;
-  right: 10px;
+  position: static !important;
+  padding: 4px 10px 0 10px !important;
   z-index: 6;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  pointer-events: none;
-  animation: fadeIn 0.35s ease-out;
+  gap: 3px !important;
+  flex-shrink: 0 !important;
+  pointer-events: auto;
 }
 
 .stage4-squad-overlay.hidden {
@@ -1496,24 +1534,21 @@ textarea,
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 6px;
+  gap: 5px;
 }
 
 .squad-pill {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 4px 9px;
+  gap: 4px;
+  padding: 2px 7px !important;
   background: rgba(35, 35, 40, 0.88);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   border: 1.5px solid rgba(255, 182, 193, 0.4);
   border-radius: var(--radius-full);
   color: #ffffff;
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: 9.5px !important;
   font-weight: 700;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .squad-pill.dora-pill {
@@ -1521,13 +1556,12 @@ textarea,
 }
 
 .squad-pill.dora-pill img {
-  width: 18px;
-  height: 18px;
+  width: 14px;
+  height: 14px;
   object-fit: contain;
 }
 
 .squad-pill.cid-pill {
-  border-color: var(--c-yellow-primary);
   color: var(--c-yellow-amber);
 }
 
@@ -1537,67 +1571,99 @@ textarea,
 }
 
 .squad-pill .pill-icon {
-  font-size: 13px;
+  font-size: 11px;
 }
 
 .stage4-goggles-tag {
   display: inline-block;
   background: linear-gradient(135deg, rgba(253, 224, 71, 0.95), rgba(245, 158, 11, 0.95));
   color: var(--c-light-black);
-  padding: 3px 12px;
+  padding: 2px 8px !important;
   border-radius: var(--radius-full);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: 9.5px !important;
   font-weight: 800;
-  letter-spacing: 0.2px;
 }
 
-.evolution-content {
-  padding: clamp(8px, 1.2vh, 14px) 14px;
-  flex: 1;
-  min-height: 0;
+/* Peeking Inspector Doraemon Banner Below Photo */
+#screen-evolution .peeking-avatar-banner,
+.peeking-avatar-banner {
+  position: static !important;
+  margin: 5px 10px 0 10px !important;
+  background: #FFFDF9 !important;
+  border-radius: 10px !important;
+  border: 1px solid var(--color-border) !important;
+  padding: 5px 10px !important;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  -webkit-overflow-scrolling: touch;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+  flex-shrink: 0 !important;
+}
+
+.peeking-doraemon-img {
+  width: 24px !important;
+  height: 24px !important;
+  border-radius: 50%;
+  background: var(--c-yellow-soft);
+  border: 1.5px solid var(--c-yellow-deep);
+  flex-shrink: 0;
+}
+
+.peeking-quote {
+  font-size: clamp(10.5px, 1.35dvh, 11.5px) !important;
+  line-height: 1.28 !important;
+  color: var(--c-light-black);
+}
+
+.peeking-name {
+  font-weight: 700;
+  color: var(--c-yellow-amber);
+}
+
+/* Evolution Text & 3 Stat Counters (Protected at Bottom of Card) */
+#screen-evolution .evolution-content,
+.evolution-content {
+  flex: 0 0 auto !important;
+  padding: 6px 12px 8px 12px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  overflow: visible !important;
 }
 
 .evolution-meta-row {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  margin-bottom: clamp(4px, 0.7vh, 8px);
+  margin-bottom: 0;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 4px;
   flex-shrink: 0;
 }
 
 .stage-title {
   font-family: var(--font-serif);
-  font-size: clamp(15px, 2vh, 18px);
+  font-size: clamp(14px, 1.85dvh, 16.5px);
   font-weight: 700;
   color: var(--c-light-black);
 }
 
 .stage-era {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 9.5px;
   font-weight: 700;
   color: #D97706;
   background: var(--c-yellow-soft);
-  padding: 2px 7px;
+  padding: 2px 6px;
   border-radius: 4px;
 }
 
 .stage-description {
-  font-size: clamp(11.5px, 1.45vh, 13px);
-  line-height: 1.4;
+  font-size: clamp(11px, 1.4dvh, 12.5px);
+  line-height: 1.32;
   color: var(--text-muted);
-  margin-bottom: clamp(6px, 1vh, 12px);
+  margin-bottom: 2px;
   flex-shrink: 0;
 }
 
@@ -1611,27 +1677,33 @@ textarea,
 .stat-box {
   background: #FFFDFE;
   border: 1px solid var(--color-border);
-  border-radius: 12px;
-  padding: clamp(6px, 0.8vh, 9px) 4px;
+  border-radius: 10px;
+  padding: 5px 4px;
   text-align: center;
 }
 
 .stat-label {
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 8.5px;
   font-weight: 700;
   color: var(--text-muted);
-  margin-bottom: 3px;
+  margin-bottom: 1px;
 }
 
 .stat-value {
-  font-size: 13.5px;
+  font-size: clamp(11px, 1.5dvh, 13px);
   font-weight: 800;
   color: var(--c-light-black);
 }
 
 .evolution-action-row {
-  margin-top: 4px;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.evolution-action-row .primary-pill-btn {
+  height: clamp(42px, 5.6dvh, 48px);
+  font-size: 14px;
 }
 
 .btn-subtext {
@@ -1642,26 +1714,27 @@ textarea,
 }
 
 /* ==========================================================================
-   ACT 3: BIRTHDAY VAULT (CLEAN, ELEGANT, DORAEMON CELEBRATION & CAKE)
-   ========================================================================== */
-/* ==========================================================================
-   ACT 3: BIRTHDAY VAULT (IN-PLACE 3D TRANSITION CARD FLIPPING SYSTEM)
+   ACT 3: BIRTHDAY VAULT (STRICT 3-ROW GRID - ZERO OVERLAP ON ALL DEVICES)
    ========================================================================== */
 .vault-header {
   text-align: center;
-  margin-bottom: clamp(4px, 0.8vh, 8px);
+  margin-bottom: clamp(4px, 0.8dvh, 8px);
   flex-shrink: 0;
 }
 
 .vault-header .main-title {
-  font-size: clamp(22px, 3vh, 28px);
+  font-size: clamp(20px, 2.8dvh, 26px);
   margin-bottom: 2px;
 }
 
+.vault-header .handwritten-accent {
+  font-size: clamp(28px, 3.8dvh, 36px);
+}
+
 .vault-header .vault-tag {
-  margin-bottom: 4px;
+  margin-bottom: 2px;
   padding: 2px 10px;
-  font-size: 10px;
+  font-size: 9.5px;
 }
 
 /* --- In-Place 3D Transition: Card Flipping Stage --- */
@@ -1671,7 +1744,7 @@ textarea,
   width: 100%;
   perspective: 1200px;
   position: relative;
-  margin-bottom: clamp(6px, 1vh, 10px);
+  margin-bottom: clamp(4px, 0.8dvh, 8px);
   display: flex;
   flex-direction: column;
 }
@@ -1689,7 +1762,6 @@ textarea,
   transform: rotateY(180deg);
 }
 
-/* Card Faces */
 .card-face {
   position: absolute;
   inset: 0;
@@ -1704,17 +1776,20 @@ textarea,
   flex-direction: column;
 }
 
-/* --- VIEW 1: FRONT FACE (Hero Design & 3D Photo Frame) --- */
+/* --- VIEW 1: FRONT FACE (3-Row Grid: Banner | Cake | Flip Bar) --- */
 .card-face-front {
   background: #FFFDFE;
   border: 2px solid var(--c-baby-pink);
-  padding: clamp(10px, 1.5vh, 16px);
-  justify-content: space-between;
+  padding: clamp(8px, 1.3dvh, 14px);
+  display: grid !important;
+  grid-template-rows: auto minmax(0, 1fr) auto !important;
+  gap: 5px !important;
   transform: rotateY(0deg);
   z-index: 2;
+  overflow: hidden !important;
 }
 
-/* Doraemon Party Host Banner (With CID Dialogue) */
+/* Row 1: Daya Sir Banner (Protected at Top) */
 .card-face-front .vault-cid-banner {
   display: flex;
   align-items: center;
@@ -1722,15 +1797,17 @@ textarea,
   background: var(--c-white);
   border: 1.5px solid var(--c-baby-pink);
   border-radius: var(--radius-sm);
-  padding: clamp(6px, 0.9vh, 10px) 12px;
+  padding: 6px 10px;
   box-shadow: 0 2px 8px rgba(255, 182, 193, 0.2);
-  margin-bottom: clamp(4px, 0.8vh, 8px);
+  margin: 0 !important;
+  position: relative;
+  z-index: 5;
   flex-shrink: 0;
 }
 
 .cid-quote-avatar {
-  width: clamp(34px, 4.8vh, 42px);
-  height: clamp(34px, 4.8vh, 42px);
+  width: clamp(32px, 4.4dvh, 40px);
+  height: clamp(32px, 4.4dvh, 40px);
   border-radius: 50%;
   background: var(--c-yellow-soft);
   border: 2px solid var(--c-yellow-deep);
@@ -1754,51 +1831,57 @@ textarea,
 .cid-badge-pill {
   display: inline-block;
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 8.5px;
   font-weight: 700;
   color: #854D0E;
   background: var(--c-yellow-soft);
   border: 1px solid var(--color-border-yellow);
   padding: 1px 6px;
   border-radius: 4px;
-  margin-bottom: 2px;
+  margin-bottom: 1px;
 }
 
 .cid-quote-text {
-  font-size: clamp(11px, 1.45vh, 12.5px);
-  line-height: 1.35;
+  font-size: clamp(10.5px, 1.4dvh, 12px);
+  line-height: 1.28;
   color: var(--c-light-black);
 }
 
-/* Centerpiece Doraemon Cake Display on Front Face */
+/* Row 2: Middle Cake Stage (Strictly Contained) */
 .card-face-front .doraemon-cake-card {
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  height: 100% !important;
+  min-height: 0 !important;
+  max-height: 100% !important;
+  margin: 0 !important;
+  padding: 2px 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 4px !important;
   background: transparent;
   border: none;
   box-shadow: none;
-  padding: 0;
-  margin-bottom: clamp(4px, 0.8vh, 8px);
   position: relative;
   cursor: pointer;
   user-select: none;
+  overflow: hidden !important;
 }
 
 .doraemon-cake-stage {
   position: relative;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: clamp(4px, 0.8vh, 8px);
+  flex: 1 1 0% !important;
+  min-height: 0 !important;
+  width: 100% !important;
+  margin: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px !important;
+  overflow: hidden !important;
 }
 
-/* Floating ambient elements */
 .cake-sparkle {
   position: absolute;
   pointer-events: none;
@@ -1815,20 +1898,25 @@ textarea,
   100% { transform: translateY(-7px) scale(1.15); }
 }
 
-/* 3D Image Frame */
+/* Auto-Scaling Cake Frame: Never Overflows onto Daya Sir or Bottom Button */
 .doraemon-cake-frame {
   position: relative;
-  width: clamp(130px, 20vh, 180px);
-  height: clamp(130px, 20vh, 180px);
-  border-radius: 20px;
+  flex: 1 1 0% !important;
+  min-height: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  max-height: clamp(88px, 16dvh, 155px) !important;
+  max-width: clamp(88px, 16dvh, 155px) !important;
+  aspect-ratio: 1 / 1 !important;
+  margin: 0 auto !important;
+  border-radius: 18px;
   background: radial-gradient(circle, #FFF2F6 0%, #FFFFFF 100%);
   border: 1.5px solid rgba(255, 182, 193, 0.45);
-  box-shadow: 0 8px 24px rgba(255, 182, 193, 0.28);
+  box-shadow: 0 6px 20px rgba(255, 182, 193, 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  margin-bottom: clamp(4px, 0.8vh, 8px);
   transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
@@ -1840,7 +1928,6 @@ textarea,
   transition: transform 0.35s ease;
 }
 
-/* Candle Flame Aura Glow */
 .candle-flame-glow {
   position: absolute;
   top: 18%;
@@ -1859,16 +1946,15 @@ textarea,
   100% { transform: scale(1.15); opacity: 1; }
 }
 
-/* Blow-up Explosion Bounce & Flash */
 .doraemon-cake-card.blown-up .doraemon-cake-frame {
   animation: cakeBlowUpBounce 0.75s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 @keyframes cakeBlowUpBounce {
   0% { transform: scale(1); }
-  25% { transform: scale(1.14) rotate(-3deg); filter: brightness(1.25); }
+  25% { transform: scale(1.08) rotate(-3deg); filter: brightness(1.2); }
   50% { transform: scale(0.96) rotate(2deg); }
-  75% { transform: scale(1.05) rotate(-1deg); }
+  75% { transform: scale(1.03) rotate(-1deg); }
   100% { transform: scale(1) rotate(0deg); }
 }
 
@@ -1892,7 +1978,6 @@ textarea,
   100% { opacity: 0; transform: scale(1.5); }
 }
 
-/* Floating Explosion Particles */
 .blowup-particles-box {
   position: absolute;
   inset: 0;
@@ -1909,53 +1994,49 @@ textarea,
 }
 
 @keyframes flyParticle {
-  0% {
-    opacity: 1;
-    transform: translate(0, 0) scale(0.6) rotate(0deg);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(var(--tx), var(--ty)) scale(1.3) rotate(var(--rot));
-  }
+  0% { opacity: 1; transform: translate(0, 0) scale(0.6) rotate(0deg); }
+  100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(1.3) rotate(var(--rot)); }
 }
 
-/* Tap to Blow Up Tag Pill */
 .cake-blow-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 12px;
+  gap: 5px;
+  padding: 3px 10px;
   background: var(--c-yellow-soft);
   border: 1.5px solid var(--c-yellow);
   border-radius: var(--radius-full);
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 800;
   color: #854D0E;
   box-shadow: 0 2px 8px rgba(245, 158, 11, 0.15);
-  animation: pulseScale 2s infinite alternate;
+  flex-shrink: 0;
 }
 
 .blow-pill-icon {
-  font-size: 12px;
+  font-size: 11px;
 }
 
-/* Tap to Blow Badge */
 .cake-tap-badge {
   display: flex;
   align-items: center;
-  gap: 7px;
-  padding: clamp(6px, 1vh, 9px) 14px;
+  justify-content: center;
+  gap: 6px;
+  padding: 5px 12px;
   background: var(--c-baby-pink-soft);
   border: 1.5px solid var(--c-baby-pink);
   border-radius: var(--radius-full);
   font-family: var(--font-sans);
-  font-size: clamp(11.5px, 1.5vh, 13px);
+  font-size: 11px;
+  line-height: 1.25;
+  text-align: center;
   font-weight: 700;
   color: var(--c-light-black);
   cursor: pointer;
   transition: all 0.2s;
   box-shadow: 0 3px 10px rgba(255, 182, 193, 0.28);
+  flex-shrink: 0;
 }
 
 .cake-tap-badge:active {
@@ -1963,15 +2044,17 @@ textarea,
   background: var(--c-white);
 }
 
-/* Glass Bottom Bar inside Frame (View 1 & View 2) */
+/* Row 3: Glass Bottom Bar inside Frame ("Read My Note ✨ [🔄 3D Flip]") */
 .card-glass-bottom-bar {
   display: flex;
   align-items: center;
   gap: 8px;
   width: 100%;
-  padding-top: clamp(6px, 0.8vh, 10px);
+  padding-top: 5px;
   border-top: 1px solid rgba(255, 182, 193, 0.4);
   flex-shrink: 0;
+  position: relative;
+  z-index: 5;
 }
 
 .glass-bar-btn {
@@ -1980,15 +2063,13 @@ textarea,
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: clamp(8px, 1.2vh, 11px) 14px;
+  padding: 7px 12px;
   border-radius: var(--radius-full);
   font-family: var(--font-sans);
-  font-size: clamp(12.5px, 1.6vh, 14px);
+  font-size: 12.5px;
   font-weight: 700;
   cursor: pointer;
   transition: transform 0.15s, background 0.2s, box-shadow 0.2s;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent !important;
 }
 
 .glass-bar-btn:active {
@@ -2004,7 +2085,7 @@ textarea,
 
 .glass-bar-btn.flip-to-note-btn .glass-btn-arrow {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 9.5px;
   background: var(--c-yellow);
   color: #854D0E;
   padding: 2px 7px;
@@ -2012,12 +2093,12 @@ textarea,
   font-weight: 800;
 }
 
-/* --- VIEW 2: BACK FACE (Birthday Note in Clean 16px-18px Text) --- */
+/* --- VIEW 2: BACK FACE (Satyam's Heartfelt Birthday Note) --- */
 .card-face-back {
   background: linear-gradient(172deg, #FFFFFF 0%, #FFF5F7 55%, #FEFCE8 100%);
   border: 2px solid var(--c-baby-pink-dark);
   transform: rotateY(180deg);
-  padding: clamp(12px, 1.8vh, 18px);
+  padding: clamp(10px, 1.5dvh, 16px);
   z-index: 1;
 }
 
@@ -2025,7 +2106,7 @@ textarea,
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: clamp(4px, 0.8vh, 8px);
+  margin-bottom: 4px;
   flex-shrink: 0;
 }
 
@@ -2042,105 +2123,85 @@ textarea,
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.2s;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent !important;
-}
-
-.in-card-close-btn:active {
-  transform: scale(0.9) rotate(-45deg);
 }
 
 .note-card-title {
   font-family: var(--font-serif);
-  font-size: clamp(20px, 2.8vh, 25px);
+  font-size: clamp(18px, 2.5dvh, 23px);
   font-weight: 700;
   color: var(--c-light-black);
-  margin-bottom: clamp(4px, 0.8vh, 8px);
+  margin-bottom: 4px;
   flex-shrink: 0;
 }
 
-/* Clean, Ultra-Readable Birthday Text (16px–18px Font Size) */
 .note-card-body {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
-  padding-right: 6px;
+  padding-right: 4px;
   font-family: var(--font-sans);
-  font-size: clamp(15.5px, 2.1vh, 17.5px); /* 16px–18px readable text! */
-  line-height: 1.62;
+  font-size: clamp(12.5px, 1.7dvh, 14.5px);
+  line-height: 1.48;
   font-weight: 500;
   color: #1E1E24;
-  letter-spacing: -0.15px;
 }
 
 .note-card-body p {
-  margin-bottom: clamp(8px, 1.1vh, 12px);
-}
-
-.note-lead-text {
-  font-size: inherit;
+  margin-bottom: 6px;
 }
 
 .note-wishes-card {
   background: rgba(255, 255, 255, 0.9);
   border: 1.5px solid #FBCFE8;
-  border-radius: 14px;
-  padding: clamp(8px, 1.2vh, 12px) 12px;
-  margin: clamp(6px, 1vh, 10px) 0;
+  border-radius: 12px;
+  padding: 8px 10px;
+  margin: 6px 0;
   box-shadow: 0 3px 10px rgba(236, 72, 153, 0.08);
 }
 
 .note-wishes-card .wishes-heading {
-  font-size: clamp(12.5px, 1.6vh, 14px);
+  font-size: 12.5px;
   font-weight: 800;
   color: #BE185D;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .note-wishes-list {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: clamp(5px, 0.9vh, 8px);
+  gap: 5px;
 }
 
 .note-wishes-list li {
-  font-size: clamp(13.5px, 1.8vh, 15px);
-  line-height: 1.45;
+  font-size: clamp(11.5px, 1.55dvh, 13.5px);
+  line-height: 1.38;
   color: #1E1E24;
 }
 
 .note-closing-text {
   font-weight: 600;
   color: #1E1E24;
-  margin-top: 6px;
+  margin-top: 4px;
 }
 
 .note-signature-block {
   text-align: right;
-  margin: clamp(8px, 1.2vh, 12px) 0 4px 0;
+  margin: 6px 0 2px 0;
 }
 
 .note-signature-block .signature-line {
-  font-size: clamp(11.5px, 1.5vh, 13px);
+  font-size: 11.5px;
   color: var(--text-muted);
 }
 
 .note-signature-block .letter-signature {
   font-family: var(--font-letter);
-  font-size: clamp(26px, 3.5vh, 32px);
+  font-size: clamp(22px, 3dvh, 28px);
   color: var(--c-baby-pink-vibrant);
   font-weight: 700;
-}
-
-/* Back Face Bottom Bar */
-.card-face-back .card-glass-bottom-bar {
-  flex-shrink: 0;
-  padding-top: clamp(6px, 0.8vh, 10px);
-  gap: 8px;
 }
 
 .flip-back-btn {
@@ -2153,46 +2214,45 @@ textarea,
   background: linear-gradient(135deg, #10B981 0%, #059669 100%);
   color: #FFFFFF;
   border: 1.5px solid #34D399;
-  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
 }
 
-/* Vault Actions Group under 3D Card */
+/* Vault Actions Group under 3D Card (2nd & 3rd Buttons) */
 .vault-actions-group {
   display: flex;
   flex-direction: column;
-  gap: clamp(6px, 1vh, 10px);
-  margin-bottom: 4px;
+  gap: 5px;
+  margin-bottom: 2px;
   flex-shrink: 0;
 }
 
 .vault-actions-group .primary-pill-btn {
-  padding: clamp(9px, 1.3vh, 12px) 18px;
-  font-size: clamp(12.5px, 1.6vh, 14px);
+  height: clamp(39px, 5.2dvh, 45px);
+  padding: 0 14px;
+  font-size: 12.5px;
 }
 
 .letter-cta-btn {
   background: linear-gradient(135deg, var(--c-light-black) 0%, #3F3F4A 100%);
   border: 1.5px solid rgba(255, 182, 193, 0.35);
-  box-shadow: 0 6px 20px rgba(236, 72, 153, 0.22);
+  box-shadow: 0 4px 14px rgba(236, 72, 153, 0.2);
 }
 
 .grand-finale-btn {
   background: linear-gradient(135deg, #10B981 0%, #059669 100%);
-  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.22);
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.2);
 }
 
 .footer-signoff {
-  font-size: 10.5px;
+  font-size: 10px;
   text-align: center;
   color: var(--text-muted);
-  line-height: 1.35;
+  line-height: 1.3;
   padding-bottom: 2px;
   flex-shrink: 0;
 }
 
 /* ==========================================================================
-   MODAL: READABLE BIRTHDAY LETTER OVERLAY
-   Authentic Handwritten Letter Look with 100% Mobile Legibility
+   MODAL: 2ND BUTTON STATIONERY WRITING PAD OVERLAY
    ========================================================================== */
 .letter-modal-overlay {
   position: fixed;
@@ -2214,22 +2274,23 @@ textarea,
 .letter-modal-card {
   width: 100%;
   max-width: 390px;
-  background: #FFFDFE;
-  border: 1.5px solid var(--c-baby-pink);
+  background: linear-gradient(180deg, #FFFDF9 0%, #FFF5F8 100%);
+  border: 2px solid var(--c-baby-pink);
   border-radius: var(--radius-card);
-  padding: 26px 20px 20px 20px;
+  padding: 20px 18px 18px 18px;
   box-shadow: var(--shadow-elevated);
   position: relative;
-  max-height: 88vh;
+  max-height: 86dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  touch-action: pan-y;
 }
 
 .modal-close-btn {
   position: absolute;
-  top: 16px;
-  right: 16px;
+  top: 14px;
+  right: 14px;
   width: 32px;
   height: 32px;
   border-radius: 50%;
@@ -2248,14 +2309,13 @@ textarea,
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .envelope-stamp {
   font-family: var(--font-mono);
   font-size: 9.5px;
   font-weight: 700;
-  letter-spacing: 0.5px;
   color: var(--c-baby-pink-vibrant);
   background: var(--c-baby-pink-soft);
   border: 1px solid var(--c-baby-pink);
@@ -2275,342 +2335,25 @@ textarea,
 
 .modal-letter-title {
   font-family: var(--font-serif);
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 700;
   color: var(--c-light-black);
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .letter-palak-name {
   font-family: var(--font-letter);
-  font-size: 38px;
+  font-size: 34px;
   color: var(--c-baby-pink-vibrant);
   display: inline-block;
   transform: rotate(-2deg);
-}
-
-/* Clean, Ultra-Readable Birthday Letter Body */
-.modal-letter-body {
-  font-family: var(--font-sans);
-  font-size: 15px;
-  line-height: 1.68;
-  font-weight: 500;
-  color: #1E1E24;
-  margin-bottom: 18px;
-  letter-spacing: -0.1px;
-}
-
-.modal-letter-body p {
-  margin-bottom: 12px;
-}
-
-.letter-wishes-card {
-  background: #FFF5F7;
-  border: 1.5px solid #FBCFE8;
-  border-radius: 16px;
-  padding: 14px 16px;
-  margin: 16px 0;
-  box-shadow: 0 2px 8px rgba(236, 72, 153, 0.06);
-}
-
-.wishes-heading {
-  font-family: var(--font-sans);
-  font-size: 13px;
-  font-weight: 800;
-  color: #BE185D;
-  letter-spacing: 0.5px;
-  margin-bottom: 10px;
-}
-
-.letter-wishes-list {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.letter-wishes-list li {
-  font-family: var(--font-sans);
-  font-size: 13.5px;
-  line-height: 1.5;
-  color: #1E1E24;
-}
-
-.letter-closing {
-  font-weight: 600;
-  color: #1E1E24;
-  margin-top: 12px;
-}
-
-.letter-signature-block {
-  text-align: right;
-  margin: 14px 0 18px 0;
-}
-
-.signature-line {
-  font-family: var(--font-sans);
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-muted);
-}
-
-.letter-signature {
-  font-family: var(--font-letter);
-  font-size: 32px;
-  font-weight: 700;
-  color: var(--c-baby-pink-vibrant);
-}
-
-/* ==========================================================================
-   PERSISTENT BOTTOM NAVIGATION BAR
-   ========================================================================== */
-.bottom-nav-bar {
-  position: fixed;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 430px;
-  background: rgba(255, 255, 255, 0.94);
-  backdrop-filter: blur(20px);
-  border-top: 1px solid var(--color-border);
-  padding: 8px 18px calc(10px + var(--safe-bottom)) 18px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  z-index: 90;
-  box-shadow: 0 -4px 18px rgba(0, 0, 0, 0.03);
-}
-
-.nav-tab-item {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  color: var(--text-subtle);
-  padding: 6px 14px;
-  border-radius: 12px;
-  transition: all 0.2s ease;
-  user-select: none;
-  min-width: 58px;
-}
-
-.nav-tab-item.locked {
-  opacity: 0.42;
-  cursor: not-allowed;
-}
-
-.nav-tab-item.locked .nav-icon {
-  filter: grayscale(0.7);
-}
-
-.nav-lock-indicator {
-  position: absolute;
-  top: 3px;
-  right: 12px;
-  font-size: 10px;
-  pointer-events: none;
-  display: none;
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 50%;
-  padding: 1px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
-}
-
-.nav-tab-item.locked .nav-lock-indicator {
-  display: block;
-}
-
-.nav-tab-item.just-unlocked {
-  animation: unlockPulse 0.7s ease;
-}
-
-@keyframes unlockPulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.22); color: var(--c-baby-pink-vibrant); filter: drop-shadow(0 0 10px rgba(236, 72, 153, 0.6)); }
-  100% { transform: scale(1); }
-}
-
-/* Nav Lock Toast Notification */
-.nav-lock-toast {
-  position: fixed;
-  bottom: calc(74px + var(--safe-bottom));
-  left: 50%;
-  transform: translateX(-50%) translateY(16px);
-  background: var(--c-light-black);
-  color: #FFFFFF;
-  padding: 9px 18px;
-  border-radius: var(--radius-full);
-  font-family: var(--font-sans);
-  font-size: 12px;
-  font-weight: 700;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
-  border: 1.5px solid rgba(255, 182, 193, 0.45);
-  z-index: 100;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  white-space: nowrap;
-  max-width: 90%;
-  text-align: center;
-}
-
-.nav-lock-toast.show {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
-
-.nav-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.2s;
-}
-
-.nav-label {
-  font-family: var(--font-sans);
-  font-size: 11px;
-  font-weight: 600;
-}
-
-.nav-tab-item.active {
-  color: var(--c-baby-pink-vibrant);
-}
-
-.nav-tab-item.active .nav-icon {
-  transform: translateY(-2px);
-  color: var(--c-baby-pink-vibrant);
-}
-
-.nav-tab-item.active .nav-label {
-  font-weight: 700;
-}
-
-/* --- Responsive Adjustments for All Mobile Screen Sizes --- */
-@media (max-width: 375px) {
-  .main-title { font-size: 28px; }
-  .handwritten-accent { font-size: 40px; }
-  .big-doraemon-stage { gap: 8px; }
-  .doraemon-big-frame { width: 90px; height: 90px; }
-  .bubble-message { font-size: 12px; }
-  .question-text { font-size: 17px; }
-  .option-text-content { font-size: 12.5px; }
-  .evolution-photo-frame { aspect-ratio: 4 / 5; height: auto; }
-  .vault-doraemon-avatar { width: 60px; height: 60px; }
-}
-
-/* ==========================================================================
-   1. SMOOTH PAGE TRANSITIONS & SPECIAL FINAL VAULT PAGE ENTRANCE
-   ========================================================================== */
-
-/* Smooth 3D Slide-Up + Fade for Normal Screens (Intro, Quiz, Verified, Evolution) */
-.screen-view.active {
-  display: flex;
-  animation: smoothPageTransition 0.48s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-  will-change: transform, opacity;
-}
-
-@keyframes smoothPageTransition {
-  0% {
-    opacity: 0;
-    transform: translateY(18px) scale(0.97);
-    filter: blur(4px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    filter: blur(0px);
-  }
-}
-
-/* Special Grand Finale Entrance for the Last Page (#screen-vault) */
-#screen-vault.screen-view.active {
-  animation: grandVaultEntrance 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes grandVaultEntrance {
-  0% {
-    opacity: 0;
-    transform: perspective(1000px) translateZ(-80px) rotateX(10deg) scale(0.9);
-    filter: brightness(1.3) blur(6px);
-  }
-  60% {
-    opacity: 1;
-    transform: perspective(1000px) translateZ(12px) rotateX(-2deg) scale(1.01);
-    filter: brightness(1.05) blur(0px);
-  }
-  100% {
-    opacity: 1;
-    transform: perspective(1000px) translateZ(0) rotateX(0deg) scale(1);
-    filter: brightness(1) blur(0px);
-  }
-}
-
-/* Staggered floating entrance for elements inside the Last Page */
-#screen-vault.active .vault-header {
-  animation: smoothPageTransition 0.55s 0.1s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-#screen-vault.active .vault-cid-banner,
-#screen-vault.active .vault-flip-stage,
-#screen-vault.active .doraemon-cake-card {
-  animation: smoothPageTransition 0.65s 0.2s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-#screen-vault.active .vault-actions-group {
-  animation: smoothPageTransition 0.65s 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-/* ==========================================================================
-   CLEAN FIT FOR 3D FLIP NOTE & 2ND BUTTON WRITING PAD MODAL (ZERO OVERLAP)
-   ========================================================================== */
-
-/* Make sure Satyam's heartfelt note on the 3D flip back face fits cleanly */
-.card-face-back .note-card-body {
-  font-size: clamp(13px, 1.75vh, 14.5px);
-  line-height: 1.48;
-  padding-right: 4px;
-}
-
-.card-face-back .note-card-body p {
-  margin-bottom: 6px;
-}
-
-.card-face-back .note-wishes-card {
-  padding: 8px 10px;
-  margin: 6px 0;
-}
-
-.card-face-back .note-wishes-list {
-  gap: 5px;
-}
-
-.card-face-back .note-wishes-list li {
-  font-size: clamp(12px, 1.6vh, 13.5px);
-  line-height: 1.38;
-}
-
-/* 2nd Button Popup: Beautiful Stationery Writing Pad Modal */
-.writing-pad-card {
-  background: linear-gradient(180deg, #FFFDF9 0%, #FFF5F8 100%) !important;
-  border: 2px solid var(--c-baby-pink) !important;
-  padding: 20px 18px 18px 18px !important;
-  max-height: 86dvh !important;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  overflow: hidden !important;
 }
 
 .writing-pad-subtext {
   font-size: 12.5px;
   line-height: 1.4;
   color: var(--text-muted);
-  margin-top: -6px;
+  margin-top: -4px;
   margin-bottom: 10px;
 }
 
@@ -2693,99 +2436,136 @@ textarea,
 }
 
 /* ==========================================================================
-   STRICT LIGHT MODE LOCK (PREVENTS ANDROID DARK MODE FROM INVERTING COLORS)
+   PERSISTENT BOTTOM NAVIGATION BAR
    ========================================================================== */
-:root,
-html,
-body,
-.mobile-app-shell,
-.screen-view,
-.card-face,
-.letter-modal-card,
-input,
-textarea,
-button {
-  color-scheme: only light !important;
-  forced-color-adjust: none !important;
-  -webkit-forced-color-adjust: none !important;
+.bottom-nav-bar {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--color-border);
+  padding: 6px 18px calc(8px + var(--safe-bottom)) 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 90;
+  box-shadow: 0 -4px 18px rgba(0, 0, 0, 0.03);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root,
-  html,
-  body {
-    color-scheme: only light !important;
-    background: linear-gradient(180deg, #FFF5F7 0%, #FFFFFF 45%, #FEFCE8 100%) !important;
-    color: #232328 !important;
-  }
+.nav-tab-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-subtle);
+  padding: 5px 14px;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  user-select: none;
+  min-width: 58px;
+}
+
+.nav-tab-item.locked {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.nav-tab-item.locked .nav-icon {
+  filter: grayscale(0.7);
+}
+
+.nav-lock-indicator {
+  position: absolute;
+  top: 2px;
+  right: 12px;
+  font-size: 10px;
+  pointer-events: none;
+  display: none;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  padding: 1px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+.nav-tab-item.locked .nav-lock-indicator {
+  display: block;
+}
+
+.nav-tab-item.just-unlocked {
+  animation: unlockPulse 0.7s ease;
+}
+
+@keyframes unlockPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.22); color: var(--c-baby-pink-vibrant); filter: drop-shadow(0 0 10px rgba(236, 72, 153, 0.6)); }
+  100% { transform: scale(1); }
+}
+
+.nav-lock-toast {
+  position: fixed;
+  bottom: calc(70px + var(--safe-bottom));
+  left: 50%;
+  transform: translateX(-50%) translateY(16px);
+  background: var(--c-light-black);
+  color: #FFFFFF;
+  padding: 9px 18px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+  border: 1.5px solid rgba(255, 182, 193, 0.45);
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  white-space: nowrap;
+  max-width: 90%;
+  text-align: center;
+}
+
+.nav-lock-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.nav-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
+
+.nav-label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.nav-tab-item.active {
+  color: var(--c-baby-pink-vibrant);
+}
+
+.nav-tab-item.active .nav-icon {
+  transform: translateY(-2px);
+  color: var(--c-baby-pink-vibrant);
+}
+
+.nav-tab-item.active .nav-label {
+  font-weight: 700;
 }
 
 /* ==========================================================================
-   UNIVERSAL ANDROID (SMALL & BIG PHONES) + TABLET COMPATIBILITY ENGINE
-   Ensures 100% visibility on 320px mini phones, 412px+ Androids, & Tablets
+   TABLETS, LAPTOPS & COMPACT ANDROID RESPONSIVE ENGINE
    ========================================================================== */
-
-/* 1. Stop the floating BGM button from overlapping top-right badges on any screen */
-.top-nav-bar {
-  padding-right: 84px !important;
-  margin-bottom: clamp(6px, 1.2vh, 14px) !important;
-}
-
-/* 2. Small / Compact Android Phones (Width <= 380px or Height <= 720px) */
-@media (max-width: 380px), (max-height: 720px) {
-  .screen-view {
-    padding: calc(8px + var(--safe-top)) 12px calc(66px + var(--safe-bottom)) 12px !important;
-  }
-
-  .main-title {
-    font-size: clamp(20px, 3vh, 25px) !important;
-  }
-
-  .handwritten-accent {
-    font-size: clamp(28px, 4.2vh, 36px) !important;
-  }
-
-  /* Override the old 4/5 aspect-ratio rule so Evolution photo never pushes buttons off-screen */
-  #screen-evolution .evolution-photo-frame,
-  .evolution-photo-frame {
-    aspect-ratio: auto !important;
-    height: clamp(130px, 21vh, 185px) !important;
-    max-height: 22vh !important;
-  }
-
-  .stage-tabs-row {
-    gap: 5px !important;
-    margin-bottom: 6px !important;
-  }
-
-  .stage-tab {
-    padding: 6px 4px !important;
-    font-size: 11px !important;
-  }
-
-  .option-card {
-    padding: 8px 10px !important;
-  }
-
-  .primary-pill-btn {
-    height: 44px !important;
-    font-size: 14px !important;
-  }
-
-  .trust-badges-row {
-    margin-top: 8px !important;
-  }
-}
-
-/* 3. Safety Fallback for Ultra-Short Screens or Landscape Orientation (Height <= 620px) */
-@media (max-height: 620px) {
-  .screen-view {
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch;
-  }
-}
-
-/* 4. Tablet & iPad Optimization (768px to 1366px) - Centered 3D App Frame */
 @media (min-width: 600px) {
   body {
     background: radial-gradient(circle at center, #FFF0F5 0%, #F3E8EE 100%) !important;
@@ -2795,85 +2575,37 @@ button {
   }
 
   .mobile-app-shell {
-    max-width: 520px !important;
-    height: min(94dvh, 920px) !important;
-    max-height: min(94dvh, 920px) !important;
-    border-radius: 34px;
+    max-width: 500px !important;
+    height: min(95dvh, 900px) !important;
+    max-height: min(95dvh, 900px) !important;
+    border-radius: 32px;
     border: 2px solid rgba(255, 182, 193, 0.55);
     box-shadow: 0 25px 70px rgba(236, 72, 153, 0.18), 0 8px 24px rgba(35, 35, 40, 0.08) !important;
+    background: linear-gradient(180deg, #FFF5F7 0%, #FFFFFF 45%, #FEFCE8 100%);
   }
 
   .screen-view {
     height: 100% !important;
     max-height: 100% !important;
-    padding: 20px 26px 84px 26px !important;
+    padding: 14px 22px 72px 22px !important;
   }
 
   .bottom-nav-bar {
-    max-width: 520px !important;
-    bottom: max(0px, calc((100dvh - min(94dvh, 920px)) / 2));
-    border-bottom-left-radius: 32px;
-    border-bottom-right-radius: 32px;
+    max-width: 500px !important;
+    bottom: max(0px, calc((100dvh - min(95dvh, 900px)) / 2));
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
   }
 
   .music-toggle-btn {
-    top: calc(max(0px, (100dvh - min(94dvh, 920px)) / 2) + 20px) !important;
-    right: calc(50% - 260px + 22px) !important;
-  }
-
-  /* Give photos extra breathing room on big Tablet screens */
-  #screen-evolution .evolution-photo-frame,
-  .evolution-photo-frame {
-    height: clamp(220px, 28vh, 300px) !important;
-  }
-
-  .doraemon-cake-frame {
-    width: clamp(170px, 24vh, 230px) !important;
-    height: clamp(170px, 24vh, 230px) !important;
+    top: calc(max(0px, (100dvh - min(95dvh, 900px)) / 2) + 14px) !important;
+    right: calc(50% - 250px + 18px) !important;
   }
 }
 
-/* ==========================================================================
-   UNIVERSAL ANDROID (SMALL & BIG PHONES) + TABLET COMPATIBILITY ENGINE
-   Ensures 100% visibility on 320px mini phones, 412px+ Androids, & Tablets
-   ========================================================================== */
-
-/* 1. Stop the floating BGM button from overlapping top-right badges on any screen */
-.top-nav-bar {
-  padding-right: 84px !important;
-  margin-bottom: clamp(6px, 1.2vh, 14px) !important;
-}
-
-/* 2. Small / Compact Android Phones (Width <= 380px or Height <= 720px) */
-@media (max-width: 380px), (max-height: 720px) {
+@media (max-width: 380px), (max-height: 700px) {
   .screen-view {
-    padding: calc(8px + var(--safe-top)) 12px calc(66px + var(--safe-bottom)) 12px !important;
-  }
-
-  .main-title {
-    font-size: clamp(20px, 3vh, 25px) !important;
-  }
-
-  .handwritten-accent {
-    font-size: clamp(28px, 4.2vh, 36px) !important;
-  }
-
-  /* Override the old 4/5 aspect-ratio rule so Evolution photo never pushes buttons off-screen */
-  #screen-evolution .evolution-photo-frame,
-  .evolution-photo-frame {
-    aspect-ratio: auto !important;
-    height: clamp(130px, 21vh, 185px) !important;
-    max-height: 22vh !important;
-  }
-
-  .stage-tabs-row {
-    gap: 5px !important;
-    margin-bottom: 6px !important;
-  }
-
-  .stage-tab {
-    padding: 6px 4px !important;
-    font-size: 11px !important;
+    padding: calc(6px + var(--safe-top)) 12px calc(62px + var(--safe-bottom)) 12px !important;
   }
 
   .option-card {
@@ -2881,174 +2613,14 @@ button {
   }
 
   .primary-pill-btn {
-    height: 44px !important;
-    font-size: 14px !important;
-  }
-
-  .trust-badges-row {
-    margin-top: 8px !important;
+    height: 42px !important;
+    font-size: 13.5px !important;
   }
 }
 
-/* 3. Safety Fallback for Ultra-Short Screens or Landscape Orientation (Height <= 620px) */
-@media (max-height: 620px) {
+@media (max-height: 580px) {
   .screen-view {
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch;
   }
-}
-
-/* 4. Tablet & iPad Optimization (768px to 1366px) - Centered 3D App Frame */
-@media (min-width: 600px) {
-  body {
-    background: radial-gradient(circle at center, #FFF0F5 0%, #F3E8EE 100%) !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .mobile-app-shell {
-    max-width: 520px !important;
-    height: min(94dvh, 920px) !important;
-    max-height: min(94dvh, 920px) !important;
-    border-radius: 34px;
-    border: 2px solid rgba(255, 182, 193, 0.55);
-    box-shadow: 0 25px 70px rgba(236, 72, 153, 0.18), 0 8px 24px rgba(35, 35, 40, 0.08) !important;
-  }
-
-  .screen-view {
-    height: 100% !important;
-    max-height: 100% !important;
-    padding: 20px 26px 84px 26px !important;
-  }
-
-  .bottom-nav-bar {
-    max-width: 520px !important;
-    bottom: max(0px, calc((100dvh - min(94dvh, 920px)) / 2));
-    border-bottom-left-radius: 32px;
-    border-bottom-right-radius: 32px;
-  }
-
-  .music-toggle-btn {
-    top: calc(max(0px, (100dvh - min(94dvh, 920px)) / 2) + 20px) !important;
-    right: calc(50% - 260px + 22px) !important;
-  }
-
-  /* Give photos extra breathing room on big Tablet screens */
-  #screen-evolution .evolution-photo-frame,
-  .evolution-photo-frame {
-    height: clamp(220px, 28vh, 300px) !important;
-  }
-
-  .doraemon-cake-frame {
-    width: clamp(170px, 24vh, 230px) !important;
-    height: clamp(170px, 24vh, 230px) !important;
-  }
-}
-
-/* ==========================================================================
-   FINAL TABLET, LAPTOP & MOBILE ZERO-OVERLAP FIX FOR VAULT & EVOLUTION
-   Automatically scales the Cake & Photo to the exact available card space!
-   ========================================================================== */
-
-/* 1. Make Card Front a strict non-overlapping vertical stack on ALL devices */
-#screen-vault .card-face-front {
-  display: grid !important;
-  grid-template-rows: auto minmax(0, 1fr) auto !important;
-  gap: 6px !important;
-  padding: clamp(8px, 1.4vh, 14px) !important;
-  overflow: hidden !important;
-}
-
-/* Row 1: Daya Sir Banner (Protected at the top, never overlapped) */
-#screen-vault .card-face-front .vault-cid-banner {
-  margin: 0 !important;
-  padding: 6px 10px !important;
-  position: relative !important;
-  z-index: 5 !important;
-}
-
-/* Row 2: Middle Cake Area (Strictly contained between Banner & Bottom Button) */
-#screen-vault .card-face-front .doraemon-cake-card {
-  height: 100% !important;
-  min-height: 0 !important;
-  max-height: 100% !important;
-  margin: 0 !important;
-  padding: 2px 0 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  gap: 4px !important;
-  overflow: hidden !important;
-}
-
-#screen-vault .doraemon-cake-stage {
-  flex: 1 1 0% !important;
-  min-height: 0 !important;
-  width: 100% !important;
-  margin: 0 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 4px !important;
-  overflow: hidden !important;
-}
-
-/* Magic Auto-Scaling Cake Box: Shrinks or grows to fit exact remaining height! */
-#screen-vault .doraemon-cake-frame,
-@media (min-width: 600px) { #screen-vault .doraemon-cake-frame } {
-  flex: 1 1 0% !important;
-  min-height: 0 !important;
-  height: auto !important;
-  width: auto !important;
-  max-height: 155px !important;
-  max-width: 155px !important;
-  aspect-ratio: 1 / 1 !important;
-  margin: 0 auto !important;
-}
-
-/* Override the old min-width: 600px tablet rule specifically */
-@media (min-width: 600px) {
-  #screen-vault .doraemon-cake-frame {
-    width: auto !important;
-    height: auto !important;
-    flex: 1 1 0% !important;
-    min-height: 0 !important;
-    max-height: clamp(95px, 16dvh, 160px) !important;
-    max-width: clamp(95px, 16dvh, 160px) !important;
-    aspect-ratio: 1 / 1 !important;
-  }
-
-  #screen-evolution .evolution-photo-frame,
-  .evolution-photo-frame {
-    height: clamp(140px, 21dvh, 210px) !important;
-    max-height: 22dvh !important;
-  }
-}
-
-/* Keep the two badges under the cake neat and non-overlapping */
-#screen-vault .cake-blow-badge {
-  flex-shrink: 0 !important;
-  margin: 0 !important;
-  padding: 3px 10px !important;
-  font-size: 9.5px !important;
-}
-
-#screen-vault .cake-tap-badge {
-  flex-shrink: 0 !important;
-  margin: 0 !important;
-  padding: 5px 12px !important;
-  font-size: 11px !important;
-  line-height: 1.25 !important;
-  text-align: center !important;
-}
-
-/* Row 3: "Read My Note (3D Flip)" Bar (Protected at the bottom of the card) */
-#screen-vault .card-face-front .card-glass-bottom-bar {
-  margin: 0 !important;
-  padding-top: 6px !important;
-  position: relative !important;
-  z-index: 5 !important;
 }
