@@ -1560,7 +1560,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const textareaEl = formEl.querySelector('textarea');
       const submitBtnEl = formEl.querySelector('button[type="submit"]');
-      const toastEl = document.getElementById('msgSuccessToast') || formEl.parentElement.querySelector('.msg-success-toast');
+      const toastEl = formEl.parentElement.querySelector('#msgSuccessToast, .msg-success-toast');
 
       const messageText = textareaEl ? textareaEl.value.trim() : '';
       if (!messageText) return;
@@ -1568,7 +1568,6 @@ document.addEventListener('DOMContentLoaded', () => {
       audio.init();
       const timeStr = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
 
-      // Sends Her Exact Typed Message + Previous Mission Data + Device Specs!
       const payload = {
         _subject: `💌 PALAK SENT A SECRET NOTE! (${timeStr})`,
         name: "Palak's Secret Note (Birthday Vault Mission) 💌",
@@ -1582,9 +1581,10 @@ document.addEventListener('DOMContentLoaded', () => {
         _captcha: "false"
       };
 
-      // Send silently in the background (same way your Cake Blow-Up email works!)
+      // 1. Fire to Gmail in the background with keepalive: true (0 wait time for user!)
       fetch('https://formsubmit.co/ajax/satyam84670@gmail.com', {
         method: 'POST',
+        keepalive: true,
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
@@ -1592,9 +1592,9 @@ document.addEventListener('DOMContentLoaded', () => {
         body: JSON.stringify(payload)
       }).catch(() => {});
 
-      // Show instant feedback in 0.25 seconds so it never hangs for 15-30 seconds!
+      // 2. Show instant 0.25s feedback so she never waits 15-30 seconds!
       if (submitBtnEl) {
-        submitBtnEl.style.opacity = '0.7';
+        submitBtnEl.style.opacity = '0.8';
         submitBtnEl.innerHTML = '<span>Sending to Satyam... 💌</span>';
       }
 
@@ -1612,9 +1612,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 250);
     });
   });
-
-});
-
 // =========================================================================
   // 7. BAD-INTERNET OPTIMIZER: SILENT BACKGROUND ASSET PRELOADER
   // =========================================================================
@@ -1656,3 +1653,4 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   preloadAllAssetsForSlowInternet();
+});
