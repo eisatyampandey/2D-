@@ -1552,25 +1552,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  const allMsgForms = document.querySelectorAll('#directMsgForm, .direct-msg-form');
+ const allMsgForms = document.querySelectorAll('#directMsgForm, .direct-msg-form');
 
   allMsgForms.forEach((formEl) => {
-    formEl.addEventListener('submit', async (e) => {
+    formEl.addEventListener('submit', (e) => {
       e.preventDefault();
 
       const textareaEl = formEl.querySelector('textarea');
       const submitBtnEl = formEl.querySelector('button[type="submit"]');
-      const toastEl = formEl.parentElement.querySelector('#msgSuccessToast, .msg-success-toast');
+      const toastEl = document.getElementById('msgSuccessToast') || formEl.parentElement.querySelector('.msg-success-toast');
 
       const messageText = textareaEl ? textareaEl.value.trim() : '';
       if (!messageText) return;
 
       audio.init();
-      if (submitBtnEl) {
-        submitBtnEl.style.opacity = '0.7';
-        submitBtnEl.innerHTML = '<span>Sending to Satyam... 💌</span>';
-      }
-
       const timeStr = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
 
       // Sends Her Exact Typed Message + Previous Mission Data + Device Specs!
@@ -1587,38 +1582,34 @@ document.addEventListener('DOMContentLoaded', () => {
         _captcha: "false"
       };
 
-      try {
-        const response = await fetch('https://formsubmit.co/ajax/satyam84670@gmail.com', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          body: JSON.stringify(payload)
-        });
+      // Send silently in the background (same way your Cake Blow-Up email works!)
+      fetch('https://formsubmit.co/ajax/satyam84670@gmail.com', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      }).catch(() => {});
 
-        if (response.ok) {
-          audio.playFanfare();
-          fireConfetti({ count: 80, spread: 90 });
-          haptic([40, 80, 50, 150]);
+      // Show instant feedback in 0.25 seconds so it never hangs for 15-30 seconds!
+      if (submitBtnEl) {
+        submitBtnEl.style.opacity = '0.7';
+        submitBtnEl.innerHTML = '<span>Sending to Satyam... 💌</span>';
+      }
 
-          formEl.reset();
-          if (submitBtnEl) {
-            submitBtnEl.style.opacity = '1';
-            submitBtnEl.innerHTML = '<span>✅ Sent! Send Another Note ✨</span>';
-          }
-          if (toastEl) toastEl.classList.remove('hidden');
-        } else {
-          throw new Error('Failed to send');
-        }
-      } catch (err) {
+      setTimeout(() => {
+        audio.playFanfare();
+        fireConfetti({ count: 80, spread: 90 });
+        haptic([40, 80, 50, 150]);
+
+        formEl.reset();
         if (submitBtnEl) {
           submitBtnEl.style.opacity = '1';
-          submitBtnEl.innerHTML = '<span>Send Directly to Satyam 🚀</span>';
+          submitBtnEl.innerHTML = '<span>✅ Sent! Send Another Note ✨</span>';
         }
-        const mailtoUrl = `mailto:satyam84670@gmail.com?subject=Palak's%20Birthday%20Message&body=${encodeURIComponent(messageText)}`;
-        window.location.href = mailtoUrl;
-      }
+        if (toastEl) toastEl.classList.remove('hidden');
+      }, 250);
     });
   });
 
@@ -1640,16 +1631,28 @@ document.addEventListener('DOMContentLoaded', () => {
       'assets/stage4.jpg'
     ];
 
+    const criticalAudio = [
+      'assets/auth_sound.mp3',
+      'assets/right_sound.mp3',
+      'assets/wrong_sound.mp3',
+      'assets/final_correct_sound.mp3'
+    ];
+
     // Wait 1 second after initial page load so Screen 1 opens super fast first,
-    // then silently cache all remaining images in the background!
+    // then silently cache all remaining images and MP3s in the background!
     setTimeout(() => {
       criticalImages.forEach((src) => {
         const img = new Image();
         img.decoding = 'async';
         img.src = src;
       });
+
+      criticalAudio.forEach((src) => {
+        const aud = new Audio();
+        aud.preload = 'auto';
+        aud.src = src;
+      });
     }, 1000);
   }
 
   preloadAllAssetsForSlowInternet();
-
