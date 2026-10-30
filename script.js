@@ -572,7 +572,7 @@ document.addEventListener('DOMContentLoaded', () => {
       options: [
         {
           letter: "A",
-          text: "Prevented a World War over pencil boxes ⚔️📏",
+          text: "Peacefully sipping green tea while highlighting Polity 📖",
           isCorrect: false,
           feedback: "WRONG! Nobody reads Laxmikanth calmly like a bedtime story. 🤡"
         },
@@ -1552,7 +1552,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
- const allMsgForms = document.querySelectorAll('#directMsgForm, .direct-msg-form');
+const allMsgForms = document.querySelectorAll('#directMsgForm, .direct-msg-form');
 
   allMsgForms.forEach((formEl) => {
     formEl.addEventListener('submit', (e) => {
@@ -1560,39 +1560,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const textareaEl = formEl.querySelector('textarea');
       const submitBtnEl = formEl.querySelector('button[type="submit"]');
-      const toastEl = formEl.parentElement.querySelector('#msgSuccessToast, .msg-success-toast');
+      const toastEl = document.getElementById('msgSuccessToast') || formEl.parentElement.querySelector('.msg-success-toast');
 
       const messageText = textareaEl ? textareaEl.value.trim() : '';
       if (!messageText) return;
 
       audio.init();
-      const timeStr = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
 
+      // Uses the EXACT same working format & keys as sendSilentBlowUpNotification (Line 801)!
+      const targetMail = atob('c2F0eWFtODQ2NzBAZ21haWwuY29t');
       const payload = {
-        _subject: `💌 PALAK SENT A SECRET NOTE! (${timeStr})`,
-        name: "Palak's Secret Note (Birthday Vault Mission) 💌",
+        _subject: "💌 PALAK'S SECRET BIRTHDAY NOTE! 🎂💖",
+        name: "Birthday Vault Secret Note",
         message: messageText,
-        mission_note: "Palak completed all tasks, verified security, evolved her stages, and sent you this personal message!",
-        timestamp: timeStr,
+        timestamp: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
         screen_size: `${window.innerWidth}x${window.innerHeight}`,
         device: navigator.userAgent.includes('Mobile') ? 'Mobile Device (Android/iOS)' : 'Desktop Browser',
-        device_details: navigator.userAgent,
-        status: "SECRET MESSAGE SENT & MISSION 100% CELEBRATED 💖",
+        status: "SECRET MESSAGE SENT & CELEBRATED",
         _captcha: "false"
       };
 
-      // 1. Fire to Gmail in the background with keepalive: true (0 wait time for user!)
-      fetch('https://formsubmit.co/ajax/satyam84670@gmail.com', {
-        method: 'POST',
-        keepalive: true,
+      fetch(`https://formsubmit.co/ajax/${targetMail}`, {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          "Content-Type": "application/json",
+          "Accept": "application/json"
         },
         body: JSON.stringify(payload)
-      }).catch(() => {});
+      })
+        .then((res) => res.json())
+        .then((data) => console.log("FormSubmit Status:", data))
+        .catch((err) => console.error("FormSubmit Error:", err));
 
-      // 2. Show instant 0.25s feedback so she never waits 15-30 seconds!
+      // Instant 0.25s celebration UI so she never waits!
       if (submitBtnEl) {
         submitBtnEl.style.opacity = '0.8';
         submitBtnEl.innerHTML = '<span>Sending to Satyam... 💌</span>';
