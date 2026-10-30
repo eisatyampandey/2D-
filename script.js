@@ -572,7 +572,7 @@ document.addEventListener('DOMContentLoaded', () => {
       options: [
         {
           letter: "A",
-          text: "Peacefully sipping green tea while highlighting Polity 📖",
+          text: "Prevented a World War over pencil boxes ⚔️📏",
           isCorrect: false,
           feedback: "WRONG! Nobody reads Laxmikanth calmly like a bedtime story. 🤡"
         },
